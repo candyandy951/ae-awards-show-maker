@@ -63,6 +63,9 @@ var inputsGroup = photosToCompsWindow.add("group", undefined, {name: "inputsGrou
 
 var selectPhotosBtn = inputsGroup.add("button", undefined, undefined, {name: "selectPhotosBtn"}); 
     selectPhotosBtn.text = "Select Photos"; 
+    selectPhotosBtn.onClick = function() {
+        selectPhotos();
+    }
 
 var divider1 = inputsGroup.add("panel", undefined, undefined, {name: "divider1"}); 
     divider1.alignment = "fill"; 
@@ -90,7 +93,7 @@ var compWidthGroup = compSettingsGroup.add("group", undefined, {name: "compWidth
 var compWidthStaticText = compWidthGroup.add("statictext", undefined, undefined, {name: "compWidthStaticText"}); 
     compWidthStaticText.text = "Comp Width:"; 
 
-var compWidthEditTextGlobalHolder = "720";
+var compWidthEditTextGlobalHolder = 720;
 var compWidthEditText = compWidthGroup.add('edittext'); 
     compWidthEditText.text = compWidthEditTextGlobalHolder; 
     compWidthEditText.preferredSize.width = 50; 
@@ -99,7 +102,8 @@ var compWidthEditText = compWidthGroup.add('edittext');
         if(numErrorCheck == "notNum"){
             compWidthEditText.text = compWidthEditTextGlobalHolder;
         }else{
-            compWidthEditTextGlobalHolder = numErrorCheck;
+            compWidthEditTextGlobalHolder = Math.floor(numErrorCheck);
+            compWidthEditText.text = compWidthEditTextGlobalHolder;
         };
     };
 
@@ -114,7 +118,7 @@ var compHeightGroup = compSettingsGroup.add("group", undefined, {name: "compHeig
 var compHeightStaticText = compHeightGroup.add("statictext", undefined, undefined, {name: "compHeightStaticText"}); 
     compHeightStaticText.text = "Comp Height"; 
 
-var compHeightEditTextGlobalHolder = "1080"
+var compHeightEditTextGlobalHolder = 1080;
 var compHeightEditText = compHeightGroup.add('edittext'); 
     compHeightEditText.text = compHeightEditTextGlobalHolder; 
     compHeightEditText.preferredSize.width = 50; 
@@ -123,7 +127,8 @@ var compHeightEditText = compHeightGroup.add('edittext');
         if(numErrorCheck == "notNum"){
             compHeightEditText.text = compHeightEditTextGlobalHolder;
         }else{
-            compHeightEditTextGlobalHolder = numErrorCheck;
+            compHeightEditTextGlobalHolder = Math.floor(numErrorCheck);
+            compHeightEditText.text = compHeightEditTextGlobalHolder;
         };
     };
 
@@ -136,9 +141,9 @@ var compDurationGroup = compSettingsGroup.add("group", undefined, {name: "compDu
     compDurationGroup.margins = 0; 
 
 var compDurationStaticText = compDurationGroup.add("statictext", undefined, undefined, {name: "compDurationStaticText"}); 
-    compDurationStaticText.text = "Comp Duration"; 
+    compDurationStaticText.text = "Comp Duration (sec)"; 
 
-var compDurationEditTextGlobalHolder = "10"
+var compDurationEditTextGlobalHolder = 10;
 var compDurationEditText = compDurationGroup.add('edittext'); 
     compDurationEditText.text = compDurationEditTextGlobalHolder; 
     compDurationEditText.preferredSize.width = 50; 
@@ -148,8 +153,60 @@ var compDurationEditText = compDurationGroup.add('edittext');
             compDurationEditText.text = compDurationEditTextGlobalHolder;
         }else{
             compDurationEditTextGlobalHolder = numErrorCheck;
+            compDurationEditText.text = compDurationEditTextGlobalHolder;
         };
     };
+
+
+// COMPFRAMERATEGROUP
+// =================
+var compFramerateGroup = compSettingsGroup.add("group", undefined, {name: "compFramerateGroup"}); 
+compFramerateGroup.orientation = "row"; 
+compFramerateGroup.alignChildren = ["left","center"]; 
+compFramerateGroup.spacing = 10; 
+compFramerateGroup.margins = 0; 
+
+var compFramerateStaticText = compFramerateGroup.add("statictext", undefined, undefined, {name: "compFramerateStaticText"}); 
+compFramerateStaticText.text = "Comp Frame Rate"; 
+
+var compFramerateEditTextGlobalHolder = 60;
+var compFramerateEditText = compFramerateGroup.add('edittext'); 
+compFramerateEditText.text = compFramerateEditTextGlobalHolder; 
+compFramerateEditText.preferredSize.width = 50; 
+compFramerateEditText.onChange = function() {
+    var numErrorCheck = textBoxNumErrorChecker(compFramerateEditText.text,"Comp Frame Rate");
+    if(numErrorCheck == "notNum"){
+        compFramerateEditText.text = compFramerateEditTextGlobalHolder;
+    }else{
+        compFramerateEditTextGlobalHolder = numErrorCheck;
+        compFramerateEditText.text = compFramerateEditTextGlobalHolder;
+    };
+};
+
+// COMPPIXELASPECTGROUP
+// =================
+var compPixelAspecteGroup = compSettingsGroup.add("group", undefined, {name: "compPixelAspecteGroup"}); 
+compPixelAspecteGroup.orientation = "row"; 
+compPixelAspecteGroup.alignChildren = ["left","center"]; 
+compPixelAspecteGroup.spacing = 10; 
+compPixelAspecteGroup.margins = 0; 
+
+var compPixelAspectStaticText = compPixelAspecteGroup.add("statictext", undefined, undefined, {name: "compPixelAspectStaticText"}); 
+compPixelAspectStaticText.text = "Comp Pixel Aspect"; 
+
+var compPixelAspectEditTextGlobalHolder = 1;
+var compPixelAspectEditText = compPixelAspecteGroup.add('edittext'); 
+compPixelAspectEditText.text = compPixelAspectEditTextGlobalHolder; 
+compPixelAspectEditText.preferredSize.width = 50; 
+compPixelAspectEditText.onChange = function() {
+    var numErrorCheck = textBoxNumErrorChecker(compPixelAspectEditText.text,"Comp Pixel Aspect");
+    if(numErrorCheck == "notNum"){
+        compPixelAspectEditText.text = compPixelAspectEditTextGlobalHolder;
+    }else{
+        compPixelAspectEditTextGlobalHolder = numErrorCheck;
+        compPixelAspectEditText.text = compPixelAspectEditTextGlobalHolder;
+    };
+};
 
 // PHOTOSTOCOMPSWINDOW
 // ===================
@@ -168,15 +225,42 @@ var selItemsStaticText = listGroup.add("statictext", undefined, undefined, {name
     selItemsStaticText.text = "Selected Items:"; 
 
 
-var selItemsList_array = ["No Items Selected","test","test"]; 
-var selItemsList = listGroup.add("listbox", undefined, undefined, {name: "selItemsList", items: selItemsList_array, numberOfColumns: 2, columnTitles: ["Photo Name","Photo #"], showHeaders: true}); 
-    selItemsList.preferredSize.width = 300; 
+var selItemsList = listGroup.add("listbox", undefined, undefined, {name: "selItemsList", items: ["No Items Selected"], numberOfColumns: 2, columnTitles: ["Footage Name","Footage ID#"], showHeaders: true, multiselect:true}); 
+    selItemsList.preferredSize.width = 500; 
     selItemsList.preferredSize.height = 300; 
+
+var removeSelectedPhotosButton = listGroup.add("button", undefined, undefined, {name: "removeSelectedPhotosButton"});
+    removeSelectedPhotosButton.text = "Delete Selected";
+    removeSelectedPhotosButton.onClick = function(){deleteMultiSelectedListItems()};
 
 var createCompsButton = listGroup.add("button", undefined, undefined, {name: "createCompsButton"}); 
     createCompsButton.text = "Create Comps from Photos!"; 
     createCompsButton.alignment = ["center","center"]; 
+    createCompsButton.onClick = function(){createCompsFcn()};
 
+
+/////////////////////////////////////////////////////////////
+////////////     GENERAL TOOL FUNCTIONS       ///////////////
+/////////////////////////////////////////////////////////////
+
+function textBoxNumErrorChecker(userInput,alertItem){
+    if(isNaN(userInput) == true){
+        alert(alertItem+" Must Be a Number!");
+        return "notNum";
+    }else if(isNaN(userInput) == false){
+        return userInput;
+    };
+};
+
+function deleteMultiSelectedListItems(){
+    for(var i = selItemsList.selection.length-1; i>-1; i--){
+        selItemsList.remove(selItemsList.selection[i]);
+    };
+};
+
+/////////////////////////////////////////////////////////////
+////////////      MAIN WINDOW FUNCTIONS       ///////////////
+/////////////////////////////////////////////////////////////
 
 function photosToCompsConverterFcn(){
     photosToCompsWindow.show();
@@ -191,17 +275,51 @@ function helpButtonFcn(){
     alert("Help Button")
 };
 
-function textBoxNumErrorChecker(userInput,alertItem){
-    if(isNaN(userInput) == true){
-        alert(alertItem+" Must Be a Number!");
-        return "notNum";
-    }else if(isNaN(userInput) == false){
-        var roundDown = parseInt(userInput);
-        return roundDown; //This needs to be a string I think
-    };
-};
 
 /////////////////////////////////////////////////////////////
 ////////////    PHOTOS TO COMPS FUNCTIONS     ///////////////
 /////////////////////////////////////////////////////////////
 
+////// GLOBAL VARIABLES ///////
+var selPhotoComps = [];
+
+
+function selectPhotos(){
+    
+    selPhotoComps = []; //Clears the global variable
+
+    for (var i = 1; i <= app.project.numItems; i++){
+        if(app.project.item(i).selected){
+            selPhotoComps[selPhotoComps.length] = app.project.item(i); //Adds selected items to global variable
+        };
+    };
+    //alert(selPhotoComps);
+
+    selItemsList.removeAll(); //Clears displayed list
+    for (var j = 0; j <= selPhotoComps.length; j++){
+        var photoItemName = selPhotoComps[j].name;
+        var photoItemID = selPhotoComps[j].id;
+        var addToList = selItemsList.add("item",photoItemName);
+            addToList.subItems[0].text = photoItemID;
+    };
+
+
+};
+
+function createCompsFcn(){
+
+    alert(app.project.item(23).name);
+    /*
+    var selFootageItems = [];
+    
+    for(var i = 0; i <= selItemsList.items.length; i++){
+        //selFootageItems[selFootageItems.length] = selItemsList.items[i].subItems[0];
+        var listedItemID = selItemsList.items[i].subItems[0]
+        var listedItem = app.project.item(listedItemID);
+        alert(listedItem);
+    };
+
+    
+    //alert(selItemsList.items[i].subItems[i]);
+    */
+};
