@@ -230,7 +230,7 @@ var selItemsList = listGroup.add("listbox", undefined, undefined, {name: "selIte
     selItemsList.preferredSize.height = 300; 
 
 var removeSelectedPhotosButton = listGroup.add("button", undefined, undefined, {name: "removeSelectedPhotosButton"});
-    removeSelectedPhotosButton.text = "Delete Selected";
+    removeSelectedPhotosButton.text = "Delete";
     removeSelectedPhotosButton.onClick = function(){deleteMultiSelectedListItems()};
 
 var createCompsButton = listGroup.add("button", undefined, undefined, {name: "createCompsButton"}); 
@@ -281,24 +281,33 @@ function helpButtonFcn(){
 /////////////////////////////////////////////////////////////
 
 ////// GLOBAL VARIABLES ///////
-var selPhotoComps = [];
+//var selPhotoComps = [];
 
 
 function selectPhotos(){
     
-    selPhotoComps = []; //Clears the global variable
+    var selPhotoItems = []; //Clears the global variable
 
     for (var i = 1; i <= app.project.numItems; i++){
         if(app.project.item(i).selected){
-            selPhotoComps[selPhotoComps.length] = app.project.item(i); //Adds selected items to global variable
+            if(app.project.item(i) == "[object FootageItem]"){
+                selPhotoItems[selPhotoItems.length] = app.project.item(i); //Adds selected items to global variable
+            }else{
+                alert("Selected item MUST be a FootageItem");
+                return false;
+            };
         };
     };
-    //alert(selPhotoComps);
+
+    if(selPhotoItems.length == 0){
+        //alert("No items selected, please select an item");
+        return false;
+    };
 
     selItemsList.removeAll(); //Clears displayed list
-    for (var j = 0; j <= selPhotoComps.length; j++){
-        var photoItemName = selPhotoComps[j].name;
-        var photoItemID = selPhotoComps[j].id;
+    for (var j = 0; j <= selPhotoItems.length; j++){
+        var photoItemName = selPhotoItems[j].name;
+        var photoItemID = selPhotoItems[j].id;
         var addToList = selItemsList.add("item",photoItemName);
             addToList.subItems[0].text = photoItemID;
     };
@@ -306,20 +315,75 @@ function selectPhotos(){
 
 };
 
+var photosToCompsCounter = 0;
 function createCompsFcn(){
 
-    alert(app.project.item(23).name);
-    /*
+    app.beginUndoGroup("Photos to Comps");
+
+    var selPhotoItemIDs = [];
     var selFootageItems = [];
-    
-    for(var i = 0; i <= selItemsList.items.length; i++){
-        //selFootageItems[selFootageItems.length] = selItemsList.items[i].subItems[0];
-        var listedItemID = selItemsList.items[i].subItems[0]
-        var listedItem = app.project.item(listedItemID);
-        alert(listedItem);
+
+    for(var i = 0; i <= selItemsList.items.length-1; i++){
+        selPhotoItemIDs[selPhotoItemIDs.length] = selItemsList.items[i].subItems[0]; //creates array of item IDs
+    };
+    //alert(selPhotoItemIDs);
+
+    for(var j = 0; j <= selPhotoItemIDs.length-1; j++){
+        var footageID = selPhotoItemIDs[j];
+        for(var k = 1; k <= app.project.numItems; k++){
+            var itemID = app.project.item(k).id;
+            if(footageID == itemID){
+                selFootageItems[selFootageItems.length] = app.project.item(k); //matches item IDs and adds footage items to array
+            };
+        };
     };
 
+    if(selFootageItems.length == 0){
+        alert("No items selected to create comps from.\nPlease select items");
+        return false;
+    };
+
+    photosToCompsCounter++
+
+    var photosToCompsFolder = app.project.items.addFolder("Photos to Comps "+photosToCompsCounter);
+    photosToCompsFolder.parentFolder = selFootageItems[0].parentFolder;
+
+    var newCompWidth = parseInt(compWidthEditText.text);
+    var newCompHeight = parseInt(compHeightEditText.text);
+    var newCompDuration = parseInt(compDurationEditText.text);
+    var newCompFramerate = parseInt(compFramerateEditText.text);
+    var newCompPixelAspect = parseInt(compPixelAspectEditText.text);
+
+    for(var m = 0; m <= selFootageItems.length-1; m++){
+        var newComp = app.project.items.addComp(selFootageItems[m].name+" COMP",newCompWidth,newCompHeight,newCompPixelAspect,newCompDuration,newCompFramerate);
+        newComp.parentFolder = photosToCompsFolder;
+
+        var imageLayer = newComp.layers.add(selFootageItems[m]);
+        var fitWidthScale = (newComp.width*newComp.pixelAspect)/(imageLayer.width*imageLayer.source.pixelAspect)*100; //This is essentially the same thing as "fit to comp width" just by using math instead
+        imageLayer.property("Scale").setValue([fitWidthScale,fitWidthScale]);
+        
+        var tempAdjustmentLayer = newComp.layers.addSolid([0,0,0],"tempAdjustmentLayer",newCompWidth,newCompHeight,newCompPixelAspect,newCompDuration);
+        tempAdjustmentLayer.adjustmentLayer = true;
+        var pointControl = tempAdjustmentLayer.Effects.addProperty("ADBE Point Control");
+        var point = pointControl.property(1);
+        point.setValue([0,0]); //sets the point to be top center
+
+        var tempTextLayer = newComp.layers.addText();
+        tempTextLayer.property("Source Text").expression = 
+            'target = thisComp.layer("tempAdjustmentLayer"); point = thisComp.layer("tempAdjustmentLayer").effect("Point Control")("Point"); target.sampleImage(point,[0.5,0.5], true, time)[3];';
+
+        var topCenterPxAlpha = tempTextLayer.property("Source Text").value;
+        if(topCenterPxAlpha == 0){
+            var fitHeightScale = (newComp.height*newComp.pixelAspect)/(imageLayer.height*imageLayer.source.pixelAspect)*100;
+            imageLayer.property("Scale").setValue([fitHeightScale,fitHeightScale]);
+        };
+
+        tempAdjustmentLayer.source.remove();
+        tempTextLayer.remove();
+
+            //alert(tempTextLayer.property("Source Text").value);
+    };
+
+    app.endUndoGroup();
     
-    //alert(selItemsList.items[i].subItems[i]);
-    */
 };
