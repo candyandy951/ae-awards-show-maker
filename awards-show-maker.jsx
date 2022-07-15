@@ -23,12 +23,12 @@ var mainButtonsGrp = mainWindow.add("group", undefined, {name: "mainButtonsGrp"}
 var photoToCompButton = mainButtonsGrp.add("button", undefined, undefined, {name: "photoToCompButton"}); 
     photoToCompButton.text = "Photos to Comps Tool"; 
     photoToCompButton.preferredSize.width = 155; 
-    photoToCompButton.onClick = photosToCompsConverterFcn;
+    photoToCompButton.onClick = function(){windowSwap(mainWindow,photosToCompsWindow)};
 
 var awardsShowMakerButton = mainButtonsGrp.add("button", undefined, undefined, {name: "awardsShowMakerButton"}); 
     awardsShowMakerButton.text = "Awards Show Maker"; 
     awardsShowMakerButton.preferredSize.width = 155; 
-    awardsShowMakerButton.onClick = awardsShowMakerFcn;
+    awardsShowMakerButton.onClick = function(){windowSwap(mainWindow,awardsShowMakerWindow)};
 
 var helpButton = mainButtonsGrp.add("button", undefined, undefined, {name: "helpButton"}); 
     helpButton.text = "Help..."; 
@@ -60,15 +60,6 @@ var inputsGroup = photosToCompsWindow.add("group", undefined, {name: "inputsGrou
     inputsGroup.alignChildren = ["right","center"]; 
     inputsGroup.spacing = 10; 
     inputsGroup.margins = 0; 
-
-var selectPhotosBtn = inputsGroup.add("button", undefined, undefined, {name: "selectPhotosBtn"}); 
-    selectPhotosBtn.text = "Select Photos"; 
-    selectPhotosBtn.onClick = function() {
-        selectPhotos();
-    }
-
-var divider1 = inputsGroup.add("panel", undefined, undefined, {name: "divider1"}); 
-    divider1.alignment = "fill"; 
 
 // COMPSETTINGSGROUP
 // =================
@@ -208,6 +199,15 @@ compPixelAspectEditText.onChange = function() {
     };
 };
 
+var divider1 = inputsGroup.add("panel", undefined, undefined, {name: "divider1"}); 
+    divider1.alignment = "fill"; 
+
+// RETURNBUTTON
+
+var ptcReturnButton = inputsGroup.add("button", undefined, undefined, {name: "ptcReturnButton"});
+    ptcReturnButton.text = "Return to Menu";
+    ptcReturnButton.onClick = function(){windowSwap(photosToCompsWindow,mainWindow);};
+
 // PHOTOSTOCOMPSWINDOW
 // ===================
 var divider2 = photosToCompsWindow.add("panel", undefined, undefined, {name: "divider2"}); 
@@ -224,19 +224,338 @@ var listGroup = photosToCompsWindow.add("group", undefined, {name: "listGroup"})
 var selItemsStaticText = listGroup.add("statictext", undefined, undefined, {name: "selItemsStaticText"}); 
     selItemsStaticText.text = "Selected Items:"; 
 
-
 var selItemsList = listGroup.add("listbox", undefined, undefined, {name: "selItemsList", items: ["No Items Selected"], numberOfColumns: 2, columnTitles: ["Footage Name","Footage ID#"], showHeaders: true, multiselect:true}); 
     selItemsList.preferredSize.width = 500; 
     selItemsList.preferredSize.height = 300; 
 
-var removeSelectedPhotosButton = listGroup.add("button", undefined, undefined, {name: "removeSelectedPhotosButton"});
+// SELECT/DELETE BUTTONS GROUP
+
+var selDelGroup = listGroup.add("group", undefined, {name: "selDelGroup"});
+    selDelGroup.orientation = "row";
+
+var selectPhotosBtn = selDelGroup.add("button", undefined, undefined, {name: "selectPhotosBtn"}); 
+    selectPhotosBtn.text = "Select Photos"; 
+    selectPhotosBtn.onClick = function() {
+        selectPhotos();
+    };
+
+var removeSelectedPhotosButton = selDelGroup.add("button", undefined, undefined, {name: "removeSelectedPhotosButton"});
     removeSelectedPhotosButton.text = "Delete";
     removeSelectedPhotosButton.onClick = function(){deleteMultiSelectedListItems()};
 
 var createCompsButton = listGroup.add("button", undefined, undefined, {name: "createCompsButton"}); 
     createCompsButton.text = "Create Comps from Photos!"; 
-    createCompsButton.alignment = ["center","center"]; 
+    createCompsButton.alignment = ["right","center"]; 
     createCompsButton.onClick = function(){createCompsFcn()};
+
+
+
+
+/*
+Code for Import https://scriptui.joonas.me — (Triple click to select): 
+{"activeId":48,"items":{"item-0":{"id":0,"type":"Dialog","parentId":false,"style":{"enabled":true,"varName":"awardsShowMakerWindow","windowType":"Dialog","creationProps":{"su1PanelCoordinates":false,"maximizeButton":false,"minimizeButton":false,"independent":false,"closeButton":true,"borderless":false,"resizeable":false},"text":"Awards Show Maker","preferredSize":[0,0],"margins":16,"orientation":"column","spacing":10,"alignChildren":["center","top"]}},"item-1":{"id":1,"type":"Panel","parentId":49,"style":{"enabled":true,"varName":"templatePanel","creationProps":{"borderStyle":"etched","su1PanelCoordinates":false},"text":"Template Input","preferredSize":[0,0],"margins":10,"orientation":"column","spacing":10,"alignChildren":["left","top"],"alignment":null}},"item-2":{"id":2,"type":"Panel","parentId":49,"style":{"enabled":true,"varName":"csvPanel","creationProps":{"borderStyle":"etched","su1PanelCoordinates":false},"text":"CSV Input","preferredSize":[0,304],"margins":10,"orientation":"column","spacing":10,"alignChildren":["left","top"],"alignment":null}},"item-3":{"id":3,"type":"Panel","parentId":4,"style":{"enabled":true,"varName":"photoCompsPanel","creationProps":{"borderStyle":"etched","su1PanelCoordinates":false},"text":"Photo Comps","preferredSize":[0,0],"margins":10,"orientation":"column","spacing":10,"alignChildren":["left","top"],"alignment":null}},"item-4":{"id":4,"type":"Group","parentId":0,"style":{"enabled":true,"varName":"mainPanelsGroup","preferredSize":[0,0],"margins":0,"orientation":"column","spacing":10,"alignChildren":["left","center"],"alignment":null}},"item-5":{"id":5,"type":"Button","parentId":0,"style":{"enabled":true,"varName":"reviewButton","text":"REVIEW INPUTS","justify":"center","preferredSize":[0,0],"alignment":null,"helpTip":null}},"item-6":{"id":6,"type":"Button","parentId":7,"style":{"enabled":true,"varName":"templateSelBtn","text":"Select Template","justify":"center","preferredSize":[0,0],"alignment":null,"helpTip":null}},"item-7":{"id":7,"type":"Group","parentId":1,"style":{"enabled":true,"varName":"selTemplateButton","preferredSize":[0,0],"margins":0,"orientation":"row","spacing":10,"alignChildren":["left","center"],"alignment":null}},"item-8":{"id":8,"type":"EditText","parentId":7,"style":{"enabled":true,"varName":"templateCompSelEditText","creationProps":{"noecho":false,"readonly":true,"multiline":false,"scrollable":false,"borderless":false,"enterKeySignalsOnChange":false},"softWrap":false,"text":"No Comp Selected","justify":"left","preferredSize":[200,0],"alignment":null,"helpTip":null}},"item-9":{"id":9,"type":"Checkbox","parentId":1,"style":{"enabled":true,"varName":"photoLayerCheckBox","text":"Template Includes a Photo Layer","preferredSize":[0,0],"alignment":null,"helpTip":null,"checked":true}},"item-10":{"id":10,"type":"Group","parentId":1,"style":{"enabled":true,"varName":"photoLayerSelGroup","preferredSize":[0,0],"margins":0,"orientation":"row","spacing":10,"alignChildren":["left","center"],"alignment":null}},"item-11":{"id":11,"type":"Button","parentId":10,"style":{"enabled":true,"varName":"photoLayerSelButton","text":"Select Photo Layer","justify":"center","preferredSize":[140,0],"alignment":null,"helpTip":null}},"item-12":{"id":12,"type":"Button","parentId":0,"style":{"enabled":true,"varName":"asmReturnButton","text":"Return to Menu","justify":"center","preferredSize":[0,0],"alignment":"left","helpTip":null}},"item-13":{"id":13,"type":"EditText","parentId":10,"style":{"enabled":true,"varName":"photoLayerEditText","creationProps":{"noecho":false,"readonly":true,"multiline":false,"scrollable":false,"borderless":false,"enterKeySignalsOnChange":false},"softWrap":false,"text":"No Layer Selected","justify":"left","preferredSize":[182,0],"alignment":null,"helpTip":null}},"item-14":{"id":14,"type":"Checkbox","parentId":1,"style":{"enabled":true,"varName":"nameLayerCheckBox","text":"Template Includes a \"Name\" Text Layer","preferredSize":[0,0],"alignment":null,"helpTip":null,"checked":true}},"item-15":{"id":15,"type":"Group","parentId":1,"style":{"enabled":true,"varName":"nameLayerSelGroup","preferredSize":[0,0],"margins":0,"orientation":"row","spacing":10,"alignChildren":["left","center"],"alignment":null}},"item-16":{"id":16,"type":"Button","parentId":15,"style":{"enabled":true,"varName":"nameLayerSelButton","text":"Select Name Layer","justify":"center","preferredSize":[140,0],"alignment":null,"helpTip":null}},"item-17":{"id":17,"type":"EditText","parentId":15,"style":{"enabled":true,"varName":"nameLayerEditText","creationProps":{"noecho":false,"readonly":true,"multiline":false,"scrollable":false,"borderless":false,"enterKeySignalsOnChange":false},"softWrap":false,"text":"No Layer Selected","justify":"left","preferredSize":[182,0],"alignment":null,"helpTip":null}},"item-18":{"id":18,"type":"Checkbox","parentId":1,"style":{"enabled":true,"varName":"subtitle1LayerCheckBox","text":"Template Includes a \"Subtitle\" Text Layer","preferredSize":[0,0],"alignment":null,"helpTip":null,"checked":true}},"item-19":{"id":19,"type":"Group","parentId":1,"style":{"enabled":true,"varName":"subtitle1LayerSelGroup","preferredSize":[0,0],"margins":0,"orientation":"row","spacing":10,"alignChildren":["left","center"],"alignment":null}},"item-20":{"id":20,"type":"Button","parentId":19,"style":{"enabled":true,"varName":"subtitle1LayerSelButton","text":"Select Subtitle 1 Layer","justify":"center","preferredSize":[0,0],"alignment":null,"helpTip":null}},"item-21":{"id":21,"type":"EditText","parentId":19,"style":{"enabled":true,"varName":"subtitle1EditText","creationProps":{"noecho":false,"readonly":true,"multiline":false,"scrollable":false,"borderless":false,"enterKeySignalsOnChange":false},"softWrap":false,"text":"No Layer Selected","justify":"left","preferredSize":[164,0],"alignment":null,"helpTip":null}},"item-22":{"id":22,"type":"Checkbox","parentId":1,"style":{"enabled":true,"varName":"subtitle2LayerCheckBox","text":"Template Includes a second \"Subtitle\" Text Layer","preferredSize":[0,0],"alignment":null,"helpTip":null}},"item-23":{"id":23,"type":"Group","parentId":1,"style":{"enabled":true,"varName":"subtitle2LayerSelGroup","preferredSize":[0,0],"margins":0,"orientation":"row","spacing":10,"alignChildren":["left","center"],"alignment":null}},"item-24":{"id":24,"type":"Button","parentId":23,"style":{"enabled":true,"varName":"subtitle2LayerSelButton","text":"Select Subtitle 2 Layer","justify":"center","preferredSize":[0,0],"alignment":null,"helpTip":null}},"item-25":{"id":25,"type":"EditText","parentId":23,"style":{"enabled":true,"varName":"subtitle2EditText","creationProps":{"noecho":false,"readonly":true,"multiline":false,"scrollable":false,"borderless":false,"enterKeySignalsOnChange":false},"softWrap":false,"text":"No Layer Selected","justify":"left","preferredSize":[164,0],"alignment":null,"helpTip":null}},"item-26":{"id":26,"type":"Group","parentId":2,"style":{"enabled":true,"varName":"csvSelGroup","preferredSize":[0,0],"margins":0,"orientation":"row","spacing":10,"alignChildren":["left","center"],"alignment":null}},"item-27":{"id":27,"type":"Button","parentId":26,"style":{"enabled":true,"varName":"csvBrowseButton","text":"Choose CSV File...","justify":"center","preferredSize":[0,0],"alignment":null,"helpTip":null}},"item-28":{"id":28,"type":"EditText","parentId":26,"style":{"enabled":true,"varName":null,"creationProps":{"noecho":false,"readonly":false,"multiline":false,"scrollable":false,"borderless":false,"enterKeySignalsOnChange":false},"softWrap":false,"text":"No CSV Selected","justify":"left","preferredSize":[250,0],"alignment":null,"helpTip":null}},"item-29":{"id":29,"type":"Group","parentId":2,"style":{"enabled":true,"varName":"csvListSepGroup","preferredSize":[0,0],"margins":0,"orientation":"row","spacing":10,"alignChildren":["left","center"],"alignment":null}},"item-30":{"id":30,"type":"StaticText","parentId":29,"style":{"enabled":true,"varName":"csvListSepStaticText","creationProps":{"truncate":"none","multiline":false,"scrolling":false},"softWrap":false,"text":"Character Used in CSV as List Separator:","justify":"left","preferredSize":[0,0],"alignment":null,"helpTip":null}},"item-31":{"id":31,"type":"EditText","parentId":29,"style":{"enabled":true,"varName":"csvListSepEditText","creationProps":{"noecho":false,"readonly":false,"multiline":false,"scrollable":false,"borderless":false,"enterKeySignalsOnChange":false},"softWrap":false,"text":",","justify":"left","preferredSize":[40,0],"alignment":null,"helpTip":null}},"item-32":{"id":32,"type":"Checkbox","parentId":2,"style":{"enabled":true,"varName":"csvHeaderRowCheckbox","text":"Does the CSV have a Header Row?","preferredSize":[0,0],"alignment":null,"helpTip":null,"checked":true}},"item-33":{"id":33,"type":"Group","parentId":2,"style":{"enabled":true,"varName":"csvNameGroup","preferredSize":[0,0],"margins":0,"orientation":"row","spacing":10,"alignChildren":["left","center"],"alignment":null}},"item-34":{"id":34,"type":"StaticText","parentId":33,"style":{"enabled":true,"varName":"csvNameColStaticText","creationProps":{"truncate":"none","multiline":false,"scrolling":false},"softWrap":false,"text":"Column in CSV with Names:","justify":"left","preferredSize":[0,0],"alignment":null,"helpTip":null}},"item-35":{"id":35,"type":"EditText","parentId":33,"style":{"enabled":true,"varName":"csvNameColEditText","creationProps":{"noecho":false,"readonly":false,"multiline":false,"scrollable":false,"borderless":false,"enterKeySignalsOnChange":false},"softWrap":false,"text":"0","justify":"left","preferredSize":[40,0],"alignment":null,"helpTip":null}},"item-36":{"id":36,"type":"Group","parentId":2,"style":{"enabled":true,"varName":"csvLastNameColGroup","preferredSize":[0,0],"margins":0,"orientation":"row","spacing":10,"alignChildren":["left","center"],"alignment":null}},"item-37":{"id":37,"type":"Checkbox","parentId":36,"style":{"enabled":true,"varName":"csvLastNameColCheckBox","text":"Last Names are in a Separate Column","preferredSize":[0,0],"alignment":null,"helpTip":null}},"item-38":{"id":38,"type":"EditText","parentId":36,"style":{"enabled":true,"varName":"csvLastNameColEditText","creationProps":{"noecho":false,"readonly":false,"multiline":false,"scrollable":false,"borderless":false,"enterKeySignalsOnChange":false},"softWrap":false,"text":"1","justify":"left","preferredSize":[40,0],"alignment":null,"helpTip":null}},"item-39":{"id":39,"type":"Group","parentId":2,"style":{"enabled":true,"varName":"csvSubtitle1ColGroup","preferredSize":[0,0],"margins":0,"orientation":"row","spacing":10,"alignChildren":["left","center"],"alignment":null}},"item-40":{"id":40,"type":"StaticText","parentId":39,"style":{"enabled":true,"varName":"csvSubtitle1ColStaticText","creationProps":{"truncate":"none","multiline":false,"scrolling":false},"softWrap":false,"text":"Column in CSV with Subtitles:","justify":"left","preferredSize":[0,0],"alignment":null,"helpTip":null}},"item-41":{"id":41,"type":"EditText","parentId":39,"style":{"enabled":true,"varName":"csvSubtitle1ColEditText","creationProps":{"noecho":false,"readonly":false,"multiline":false,"scrollable":false,"borderless":false,"enterKeySignalsOnChange":false},"softWrap":false,"text":"2","justify":"left","preferredSize":[40,0],"alignment":null,"helpTip":null}},"item-42":{"id":42,"type":"Group","parentId":2,"style":{"enabled":true,"varName":"csvSubtitle2ColGroup","preferredSize":[0,0],"margins":0,"orientation":"row","spacing":10,"alignChildren":["left","center"],"alignment":null}},"item-43":{"id":43,"type":"StaticText","parentId":42,"style":{"enabled":true,"varName":"csvSubtitle2ColStaticText","creationProps":{"truncate":"none","multiline":false,"scrolling":false},"softWrap":false,"text":"Column in CSV with Second Subtitle:","justify":"left","preferredSize":[0,0],"alignment":null,"helpTip":null}},"item-44":{"id":44,"type":"EditText","parentId":42,"style":{"enabled":true,"varName":"csvSubtitle2ColEditText","creationProps":{"noecho":false,"readonly":false,"multiline":false,"scrollable":false,"borderless":false,"enterKeySignalsOnChange":false},"softWrap":false,"text":"3","justify":"left","preferredSize":[40,0],"alignment":null,"helpTip":null}},"item-45":{"id":45,"type":"Button","parentId":47,"style":{"enabled":true,"varName":"selectPhotoCompsButton","text":"Select Photo Comps","justify":"center","preferredSize":[0,0],"alignment":null,"helpTip":null}},"item-46":{"id":46,"type":"Button","parentId":47,"style":{"enabled":true,"varName":"removeSelectedCompsButton","text":"Delete","justify":"center","preferredSize":[0,0],"alignment":null,"helpTip":null}},"item-47":{"id":47,"type":"Group","parentId":3,"style":{"enabled":true,"varName":"photoCompsButtonsGroup","preferredSize":[0,0],"margins":0,"orientation":"row","spacing":10,"alignChildren":["left","center"],"alignment":null}},"item-48":{"id":48,"type":"ListBox","parentId":3,"style":{"enabled":true,"varName":"selectedPhotoCompsList","creationProps":{"multiselect":false,"numberOfColumns":1,"columnWidths":"[]","columnTitles":"[]","showHeaders":false},"listItems":"No Comps Selected","preferredSize":[757,300],"alignment":null,"helpTip":null,"selection":[]}},"item-49":{"id":49,"type":"Group","parentId":4,"style":{"enabled":true,"varName":"templateCSVPanelGroup","preferredSize":[0,0],"margins":0,"orientation":"row","spacing":10,"alignChildren":["left","center"],"alignment":null}}},"order":[0,4,49,1,7,6,8,9,10,11,13,14,15,16,17,18,19,20,21,22,23,24,25,2,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,3,47,45,46,48,12,5],"settings":{"importJSON":true,"indentSize":false,"cepExport":false,"includeCSSJS":true,"showDialog":true,"functionWrapper":false,"afterEffectsDockable":false,"itemReferenceList":"None"}}
+*/ 
+
+// AWARDSSHOWMAKERWINDOW
+// =====================
+var awardsShowMakerWindow = new Window("palette"); 
+    awardsShowMakerWindow.text = "Awards Show Maker"; 
+    awardsShowMakerWindow.orientation = "column"; 
+    awardsShowMakerWindow.alignChildren = ["center","top"]; 
+    awardsShowMakerWindow.spacing = 10; 
+    awardsShowMakerWindow.margins = 16; 
+
+// MAINPANELSGROUP
+// ===============
+var mainPanelsGroup = awardsShowMakerWindow.add("group", undefined, {name: "mainPanelsGroup"}); 
+    mainPanelsGroup.orientation = "column"; 
+    mainPanelsGroup.alignChildren = ["left","center"]; 
+    mainPanelsGroup.spacing = 10; 
+    mainPanelsGroup.margins = 0; 
+
+// TEMPLATE & PANELGROUP
+// =====================
+var templateCSVPanelGroup = mainPanelsGroup.add("group", undefined, {name: "templateCSVPanelGroup"}); 
+    templateCSVPanelGroup.orientation = "row"; 
+    templateCSVPanelGroup.alignChildren = ["left","center"]; 
+    templateCSVPanelGroup.spacing = 10; 
+    templateCSVPanelGroup.margins = 0; 
+
+// TEMPLATEPANEL
+// =============
+var templatePanel = templateCSVPanelGroup.add("panel", undefined, undefined, {name: "templatePanel"}); 
+    templatePanel.text = "Template Input"; 
+    templatePanel.orientation = "column"; 
+    templatePanel.alignChildren = ["left","top"]; 
+    templatePanel.spacing = 10; 
+    templatePanel.margins = 10; 
+
+// SELTEMPLATEBUTTON
+// =================
+var selTemplateButton = templatePanel.add("group", undefined, {name: "selTemplateButton"}); 
+    selTemplateButton.orientation = "row"; 
+    selTemplateButton.alignChildren = ["left","center"]; 
+    selTemplateButton.spacing = 10; 
+    selTemplateButton.margins = 0; 
+
+var templateSelBtn = selTemplateButton.add("button", undefined, undefined, {name: "templateSelBtn"}); 
+    templateSelBtn.text = "Select Template"; 
+
+var templateCompSelEditText = selTemplateButton.add('edittext {properties: {name: "templateCompSelEditText", readonly: true}}'); 
+    templateCompSelEditText.text = "No Comp Selected"; 
+    templateCompSelEditText.preferredSize.width = 200; 
+
+// PHOTO LAYER CHECKBOX
+// =============
+var photoLayerCheckBox = templatePanel.add("checkbox", undefined, undefined, {name: "photoLayerCheckBox"}); 
+    photoLayerCheckBox.text = "Template Includes a Photo Layer"; 
+    photoLayerCheckBox.value = true; 
+    photoLayerCheckBox.onClick = function(){itemHideUnhider(photoLayerSelGroup)};
+
+// PHOTOLAYERSELGROUP
+// ==================
+var photoLayerSelGroup = templatePanel.add("group", undefined, {name: "photoLayerSelGroup"}); 
+    photoLayerSelGroup.orientation = "row"; 
+    photoLayerSelGroup.alignChildren = ["left","center"]; 
+    photoLayerSelGroup.spacing = 10; 
+    photoLayerSelGroup.margins = 0; 
+
+var photoLayerSelButton = photoLayerSelGroup.add("button", undefined, undefined, {name: "photoLayerSelButton"}); 
+    photoLayerSelButton.text = "Select Photo Layer"; 
+    photoLayerSelButton.preferredSize.width = 140; 
+
+var photoLayerEditText = photoLayerSelGroup.add('edittext {properties: {name: "photoLayerEditText", readonly: true}}'); 
+    photoLayerEditText.text = "No Layer Selected"; 
+    photoLayerEditText.preferredSize.width = 182; 
+
+// NAME LAYER CHECKBOX
+// =============
+var nameLayerCheckBox = templatePanel.add("checkbox", undefined, undefined, {name: "nameLayerCheckBox"}); 
+    nameLayerCheckBox.text = "Template Includes a \u0022Name\u0022 Text Layer"; 
+    nameLayerCheckBox.value = true; 
+    nameLayerCheckBox.onClick = function(){
+        itemHideUnhider(nameLayerSelGroup);
+        itemHideUnhider(csvNameColGroup);
+        itemHideUnhider(csvLastNameColGroup);
+    };
+
+// NAMELAYERSELGROUP
+// =================
+var nameLayerSelGroup = templatePanel.add("group", undefined, {name: "nameLayerSelGroup"}); 
+    nameLayerSelGroup.orientation = "row"; 
+    nameLayerSelGroup.alignChildren = ["left","center"]; 
+    nameLayerSelGroup.spacing = 10; 
+    nameLayerSelGroup.margins = 0; 
+
+var nameLayerSelButton = nameLayerSelGroup.add("button", undefined, undefined, {name: "nameLayerSelButton"}); 
+    nameLayerSelButton.text = "Select Name Layer"; 
+    nameLayerSelButton.preferredSize.width = 140; 
+
+var nameLayerEditText = nameLayerSelGroup.add('edittext {properties: {name: "nameLayerEditText", readonly: true}}'); 
+    nameLayerEditText.text = "No Layer Selected"; 
+    nameLayerEditText.preferredSize.width = 182; 
+
+// SUBTITLE1 LAYER CHECKBOX
+// =============
+var subtitle1LayerCheckBox = templatePanel.add("checkbox", undefined, undefined, {name: "subtitle1LayerCheckBox"}); 
+    subtitle1LayerCheckBox.text = "Template Includes a \u0022Subtitle\u0022 Text Layer"; 
+    subtitle1LayerCheckBox.value = true; 
+    subtitle1LayerCheckBox.onClick = function(){
+        itemHideUnhider(subtitle1LayerSelGroup);
+        itemHideUnhider(csvSubtitle1ColGroup);
+    };
+
+// SUBTITLE1LAYERSELGROUP
+// ======================
+var subtitle1LayerSelGroup = templatePanel.add("group", undefined, {name: "subtitle1LayerSelGroup"}); 
+    subtitle1LayerSelGroup.orientation = "row"; 
+    subtitle1LayerSelGroup.alignChildren = ["left","center"]; 
+    subtitle1LayerSelGroup.spacing = 10; 
+    subtitle1LayerSelGroup.margins = 0; 
+
+var subtitle1LayerSelButton = subtitle1LayerSelGroup.add("button", undefined, undefined, {name: "subtitle1LayerSelButton"}); 
+    subtitle1LayerSelButton.text = "Select Subtitle 1 Layer"; 
+
+var subtitle1EditText = subtitle1LayerSelGroup.add('edittext {properties: {name: "subtitle1EditText", readonly: true}}'); 
+    subtitle1EditText.text = "No Layer Selected"; 
+    subtitle1EditText.preferredSize.width = 164; 
+
+// SUBTITLE2 LAYER CHECKBOX
+// =============
+var subtitle2LayerCheckBox = templatePanel.add("checkbox", undefined, undefined, {name: "subtitle2LayerCheckBox"}); 
+    subtitle2LayerCheckBox.text = "Template Includes a second \u0022Subtitle\u0022 Text Layer"; 
+    subtitle2LayerCheckBox.value = false;
+    subtitle2LayerCheckBox.onClick = function(){
+        itemHideUnhider(subtitle2LayerSelGroup);
+        itemHideUnhider(csvSubtitle2ColGroup);
+    };
+
+// SUBTITLE2LAYERSELGROUP
+// ======================
+var subtitle2LayerSelGroup = templatePanel.add("group", undefined, {name: "subtitle2LayerSelGroup"}); 
+    subtitle2LayerSelGroup.orientation = "row"; 
+    subtitle2LayerSelGroup.alignChildren = ["left","center"]; 
+    subtitle2LayerSelGroup.spacing = 10; 
+    subtitle2LayerSelGroup.margins = 0; 
+
+var subtitle2LayerSelButton = subtitle2LayerSelGroup.add("button", undefined, undefined, {name: "subtitle2LayerSelButton"}); 
+    subtitle2LayerSelButton.text = "Select Subtitle 2 Layer"; 
+
+var subtitle2EditText = subtitle2LayerSelGroup.add('edittext {properties: {name: "subtitle2EditText", readonly: true}}'); 
+    subtitle2EditText.text = "No Layer Selected"; 
+    subtitle2EditText.preferredSize.width = 164; 
+
+    subtitle2LayerSelGroup.hide()
+
+// CSVPANEL
+// ========
+var csvPanel = templateCSVPanelGroup.add("panel", undefined, undefined, {name: "csvPanel"}); 
+    csvPanel.text = "CSV Input"; 
+    csvPanel.preferredSize.height = 304; 
+    csvPanel.orientation = "column"; 
+    csvPanel.alignChildren = ["left","top"]; 
+    csvPanel.spacing = 10; 
+    csvPanel.margins = 10; 
+
+// CSVSELGROUP
+// ===========
+var csvSelGroup = csvPanel.add("group", undefined, {name: "csvSelGroup"}); 
+    csvSelGroup.orientation = "row"; 
+    csvSelGroup.alignChildren = ["left","center"]; 
+    csvSelGroup.spacing = 10; 
+    csvSelGroup.margins = 0; 
+
+var csvBrowseButton = csvSelGroup.add("button", undefined, undefined, {name: "csvBrowseButton"}); 
+    csvBrowseButton.text = "Choose CSV File..."; 
+
+var edittext1 = csvSelGroup.add('edittext {properties: {name: "edittext1", readonly: true}}'); 
+    edittext1.text = "No CSV Selected"; 
+    edittext1.preferredSize.width = 250; 
+
+// CSVLISTSEPGROUP
+// ===============
+var csvListSepGroup = csvPanel.add("group", undefined, {name: "csvListSepGroup"}); 
+    csvListSepGroup.orientation = "row"; 
+    csvListSepGroup.alignChildren = ["left","center"]; 
+    csvListSepGroup.spacing = 10; 
+    csvListSepGroup.margins = 0; 
+
+var csvListSepStaticText = csvListSepGroup.add("statictext", undefined, undefined, {name: "csvListSepStaticText"}); 
+    csvListSepStaticText.text = "Character Used in CSV as List Separator:"; 
+
+var csvListSepEditText = csvListSepGroup.add('edittext {properties: {name: "csvListSepEditText"}}'); 
+    csvListSepEditText.text = ","; 
+    csvListSepEditText.preferredSize.width = 40; 
+
+// CSV HEADER ROW CHECKBOX
+// ========
+var csvHeaderRowCheckbox = csvPanel.add("checkbox", undefined, undefined, {name: "csvHeaderRowCheckbox"}); 
+    csvHeaderRowCheckbox.text = "Does the CSV have a Header Row?"; 
+    csvHeaderRowCheckbox.value = true; 
+
+// CSVNAMEGROUP
+// ============
+var csvNameColGroup = csvPanel.add("group", undefined, {name: "csvNameColGroup"}); 
+    csvNameColGroup.orientation = "row"; 
+    csvNameColGroup.alignChildren = ["left","center"]; 
+    csvNameColGroup.spacing = 10; 
+    csvNameColGroup.margins = 0; 
+
+var csvNameColStaticText = csvNameColGroup.add("statictext", undefined, undefined, {name: "csvNameColStaticText"}); 
+    csvNameColStaticText.text = "Column in CSV with Names:"; 
+
+var csvNameColEditText = csvNameColGroup.add('edittext {properties: {name: "csvNameColEditText"}}'); 
+    csvNameColEditText.text = "0"; 
+    csvNameColEditText.preferredSize.width = 40; 
+
+// CSVLASTNAMECOLGROUP
+// ===================
+var csvLastNameColGroup = csvPanel.add("group", undefined, {name: "csvLastNameColGroup"}); 
+    csvLastNameColGroup.orientation = "row"; 
+    csvLastNameColGroup.alignChildren = ["left","center"]; 
+    csvLastNameColGroup.spacing = 10; 
+    csvLastNameColGroup.margins = 0; 
+
+var csvLastNameColCheckBox = csvLastNameColGroup.add("checkbox", undefined, undefined, {name: "csvLastNameColCheckBox"}); 
+    csvLastNameColCheckBox.text = "Last Names are in a Separate Column"; 
+    csvLastNameColCheckBox.onClick = function(){itemHideUnhider(csvLastNameColEditText)};
+
+var csvLastNameColEditText = csvLastNameColGroup.add('edittext {properties: {name: "csvLastNameColEditText"}}'); 
+    csvLastNameColEditText.text = "1"; 
+    csvLastNameColEditText.preferredSize.width = 40; 
+    csvLastNameColEditText.hide();
+
+// CSVSUBTITLE1COLGROUP
+// ====================
+var csvSubtitle1ColGroup = csvPanel.add("group", undefined, {name: "csvSubtitle1ColGroup"}); 
+    csvSubtitle1ColGroup.orientation = "row"; 
+    csvSubtitle1ColGroup.alignChildren = ["left","center"]; 
+    csvSubtitle1ColGroup.spacing = 10; 
+    csvSubtitle1ColGroup.margins = 0; 
+
+var csvSubtitle1ColStaticText = csvSubtitle1ColGroup.add("statictext", undefined, undefined, {name: "csvSubtitle1ColStaticText"}); 
+    csvSubtitle1ColStaticText.text = "Column in CSV with Subtitles:"; 
+
+var csvSubtitle1ColEditText = csvSubtitle1ColGroup.add('edittext {properties: {name: "csvSubtitle1ColEditText"}}'); 
+    csvSubtitle1ColEditText.text = "2"; 
+    csvSubtitle1ColEditText.preferredSize.width = 40; 
+
+// CSVSUBTITLE2COLGROUP
+// ====================
+var csvSubtitle2ColGroup = csvPanel.add("group", undefined, {name: "csvSubtitle2ColGroup"}); 
+    csvSubtitle2ColGroup.orientation = "row"; 
+    csvSubtitle2ColGroup.alignChildren = ["left","center"]; 
+    csvSubtitle2ColGroup.spacing = 10; 
+    csvSubtitle2ColGroup.margins = 0; 
+
+var csvSubtitle2ColStaticText = csvSubtitle2ColGroup.add("statictext", undefined, undefined, {name: "csvSubtitle2ColStaticText"}); 
+    csvSubtitle2ColStaticText.text = "Column in CSV with Second Subtitle:"; 
+
+var csvSubtitle2ColEditText = csvSubtitle2ColGroup.add('edittext {properties: {name: "csvSubtitle2ColEditText"}}'); 
+    csvSubtitle2ColEditText.text = "3"; 
+    csvSubtitle2ColEditText.preferredSize.width = 40; 
+
+    csvSubtitle2ColGroup.hide();
+
+// PHOTOCOMPSPANEL
+// ===============
+var photoCompsPanel = mainPanelsGroup.add("panel", undefined, undefined, {name: "photoCompsPanel"}); 
+    photoCompsPanel.text = "Photo Comps"; 
+    photoCompsPanel.orientation = "column"; 
+    photoCompsPanel.alignChildren = ["left","top"]; 
+    photoCompsPanel.spacing = 10; 
+    photoCompsPanel.margins = 10; 
+
+// PHOTOCOMPSBUTTONSGROUP
+// ======================
+var photoCompsButtonsGroup = photoCompsPanel.add("group", undefined, {name: "photoCompsButtonsGroup"}); 
+    photoCompsButtonsGroup.orientation = "row"; 
+    photoCompsButtonsGroup.alignChildren = ["left","center"]; 
+    photoCompsButtonsGroup.spacing = 10; 
+    photoCompsButtonsGroup.margins = 0; 
+
+var selectPhotoCompsButton = photoCompsButtonsGroup.add("button", undefined, undefined, {name: "selectPhotoCompsButton"}); 
+    selectPhotoCompsButton.text = "Select Photo Comps"; 
+
+var removeSelectedCompsButton = photoCompsButtonsGroup.add("button", undefined, undefined, {name: "removeSelectedCompsButton"}); 
+    removeSelectedCompsButton.text = "Delete"; 
+
+// PHOTOCOMPSPANEL
+// ===============
+var selectedPhotoCompsList_array = ["No Comps Selected"]; 
+var selectedPhotoCompsList = photoCompsPanel.add("listbox", undefined, undefined, {name: "selectedPhotoCompsList", items: ["No Items Selected"], numberOfColumns: 2, columnTitles: ["Footage Name","Footage ID#"], showHeaders: true, multiselect:true}); 
+    selectedPhotoCompsList.preferredSize.width = 757; 
+    selectedPhotoCompsList.preferredSize.height = 300; 
+
+// AWARDSSHOWMAKERWINDOW
+// =====================
+var asmReturnButton = awardsShowMakerWindow.add("button", undefined, undefined, {name: "asmReturnButton"}); 
+    asmReturnButton.text = "Return to Menu"; 
+    asmReturnButton.alignment = ["left","top"]; 
+    asmReturnButton.onClick = function(){windowSwap(awardsShowMakerWindow,mainWindow)};
+
+var reviewButton = awardsShowMakerWindow.add("button", undefined, undefined, {name: "reviewButton"}); 
+    reviewButton.text = "REVIEW INPUTS"; 
 
 
 /////////////////////////////////////////////////////////////
@@ -255,6 +574,19 @@ function textBoxNumErrorChecker(userInput,alertItem){
 function deleteMultiSelectedListItems(){
     for(var i = selItemsList.selection.length-1; i>-1; i--){
         selItemsList.remove(selItemsList.selection[i]);
+    };
+};
+
+function windowSwap(winToHide,winToShow){
+    winToHide.hide();
+    winToShow.show();
+};
+
+function itemHideUnhider(item){
+    if(item.visible == true){
+        item.hide();
+    }else if(item.visible == false){
+        item.show();
     };
 };
 
