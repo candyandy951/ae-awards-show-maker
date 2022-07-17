@@ -236,12 +236,12 @@ var selDelGroup = listGroup.add("group", undefined, {name: "selDelGroup"});
 var selectPhotosBtn = selDelGroup.add("button", undefined, undefined, {name: "selectPhotosBtn"}); 
     selectPhotosBtn.text = "Select Photos"; 
     selectPhotosBtn.onClick = function() {
-        selectPhotos();
+        selectItemNameIDList("[object FootageItem]","FootageItem",selItemsList);
     };
 
 var removeSelectedPhotosButton = selDelGroup.add("button", undefined, undefined, {name: "removeSelectedPhotosButton"});
     removeSelectedPhotosButton.text = "Delete";
-    removeSelectedPhotosButton.onClick = function(){deleteMultiSelectedListItems()};
+    removeSelectedPhotosButton.onClick = function(){deleteMultiSelectedListItems(selItemsList)};
 
 var createCompsButton = listGroup.add("button", undefined, undefined, {name: "createCompsButton"}); 
     createCompsButton.text = "Create Comps from Photos!"; 
@@ -300,6 +300,9 @@ var selTemplateButton = templatePanel.add("group", undefined, {name: "selTemplat
 
 var templateSelBtn = selTemplateButton.add("button", undefined, undefined, {name: "templateSelBtn"}); 
     templateSelBtn.text = "Select Template"; 
+    templateSelBtn.onClick = function(){
+        asmTemplateCompID = selectSingleProjectItem("[object CompItem]","Comp Item",templateCompSelEditText);
+    };
 
 var templateCompSelEditText = selTemplateButton.add('edittext {properties: {name: "templateCompSelEditText", readonly: true}}'); 
     templateCompSelEditText.text = "No Comp Selected"; 
@@ -536,14 +539,16 @@ var photoCompsButtonsGroup = photoCompsPanel.add("group", undefined, {name: "pho
 
 var selectPhotoCompsButton = photoCompsButtonsGroup.add("button", undefined, undefined, {name: "selectPhotoCompsButton"}); 
     selectPhotoCompsButton.text = "Select Photo Comps"; 
+    selectPhotoCompsButton.onClick = function(){selectItemNameIDList("[object CompItem]","CompItem",selectedPhotoCompsList);};
 
 var removeSelectedCompsButton = photoCompsButtonsGroup.add("button", undefined, undefined, {name: "removeSelectedCompsButton"}); 
     removeSelectedCompsButton.text = "Delete"; 
+    removeSelectedCompsButton.onClick = function(){deleteMultiSelectedListItems(selectedPhotoCompsList);};
 
 // PHOTOCOMPSPANEL
 // ===============
 var selectedPhotoCompsList_array = ["No Comps Selected"]; 
-var selectedPhotoCompsList = photoCompsPanel.add("listbox", undefined, undefined, {name: "selectedPhotoCompsList", items: ["No Items Selected"], numberOfColumns: 2, columnTitles: ["Footage Name","Footage ID#"], showHeaders: true, multiselect:true}); 
+var selectedPhotoCompsList = photoCompsPanel.add("listbox", undefined, undefined, {name: "selectedPhotoCompsList", items: ["No Items Selected"], numberOfColumns: 2, columnTitles: ["Comp Name","Comp ID#"], showHeaders: true, multiselect:true}); 
     selectedPhotoCompsList.preferredSize.width = 757; 
     selectedPhotoCompsList.preferredSize.height = 300; 
 
@@ -556,6 +561,14 @@ var asmReturnButton = awardsShowMakerWindow.add("button", undefined, undefined, 
 
 var reviewButton = awardsShowMakerWindow.add("button", undefined, undefined, {name: "reviewButton"}); 
     reviewButton.text = "REVIEW INPUTS"; 
+
+
+
+/////////////////////////////////////////////////////////////
+////////////    GLOBAL VARIABLES     ////////////////////////
+/////////////////////////////////////////////////////////////
+
+var asmTemplateCompID;
 
 
 /////////////////////////////////////////////////////////////
@@ -571,9 +584,9 @@ function textBoxNumErrorChecker(userInput,alertItem){
     };
 };
 
-function deleteMultiSelectedListItems(){
-    for(var i = selItemsList.selection.length-1; i>-1; i--){
-        selItemsList.remove(selItemsList.selection[i]);
+function deleteMultiSelectedListItems(listVar){
+    for(var i = listVar.selection.length-1; i>-1; i--){
+        listVar.remove(listVar.selection[i]);
     };
 };
 
@@ -590,62 +603,77 @@ function itemHideUnhider(item){
     };
 };
 
+function selectItemNameIDList(itemTypeString,alertItemType,listToAdd){ //function runs through the project and puts selected item names and IDs into a given list
+    
+    var selItems = []; //Clears the global variable
+
+    for (var i = 1; i <= app.project.numItems; i++){
+        if(app.project.item(i).selected){
+            if(app.project.item(i) == itemTypeString){
+                selItems[selItems.length] = app.project.item(i); //Adds selected items to global variable
+            }else{
+                alert("Selected item MUST be a " + alertItemType);
+                return false;
+            };
+        };
+    };
+
+    if(selItems.length == 0){
+        //alert("No items selected, please select an item");
+        return false;
+    };
+
+    listToAdd.removeAll(); //Clears displayed list
+    for (var j = 0; j <= selItems.length; j++){
+        var itemName = selItems[j].name;
+        var itemID = selItems[j].id;
+        var addToList = listToAdd.add("item",itemName);
+            addToList.subItems[0].text = itemID;
+    };
+
+
+};
+
+function selectSingleProjectItem(itemTypeString,alertItemType,textToChange){
+    var selItem = [];
+
+    for (var i = 1; i <= app.project.numItems; i++){
+        if(app.project.item(i).selected){
+            if(app.project.item(i) == itemTypeString){
+                selItem[selItem.length] = app.project.item(i);
+            }else{
+                alert("Selected item MUST be a " + alertItemType);
+                return false;
+            };
+        };
+    };
+
+
+
+    if(selItem.length == 0){
+        return false;
+    }else if(selItem.length > 1){
+        alert("Multiple Items Selected,\nPlease Select Only ONE Item.");
+    }else{
+        textToChange.text = selItem[0].name;
+        var selItemID = selItem[0].id;
+        return selItemID;
+    };
+};
+
+
 /////////////////////////////////////////////////////////////
 ////////////      MAIN WINDOW FUNCTIONS       ///////////////
 /////////////////////////////////////////////////////////////
 
-function photosToCompsConverterFcn(){
-    photosToCompsWindow.show();
-    mainWindow.hide();
-};
-
-function awardsShowMakerFcn(){
-    alert("Awards Show Maker")
-};
-
 function helpButtonFcn(){
-    alert("Help Button")
+    alert("Help Button No Worky Yet");
 };
 
 
 /////////////////////////////////////////////////////////////
 ////////////    PHOTOS TO COMPS FUNCTIONS     ///////////////
 /////////////////////////////////////////////////////////////
-
-////// GLOBAL VARIABLES ///////
-//var selPhotoComps = [];
-
-
-function selectPhotos(){
-    
-    var selPhotoItems = []; //Clears the global variable
-
-    for (var i = 1; i <= app.project.numItems; i++){
-        if(app.project.item(i).selected){
-            if(app.project.item(i) == "[object FootageItem]"){
-                selPhotoItems[selPhotoItems.length] = app.project.item(i); //Adds selected items to global variable
-            }else{
-                alert("Selected item MUST be a FootageItem");
-                return false;
-            };
-        };
-    };
-
-    if(selPhotoItems.length == 0){
-        //alert("No items selected, please select an item");
-        return false;
-    };
-
-    selItemsList.removeAll(); //Clears displayed list
-    for (var j = 0; j <= selPhotoItems.length; j++){
-        var photoItemName = selPhotoItems[j].name;
-        var photoItemID = selPhotoItems[j].id;
-        var addToList = selItemsList.add("item",photoItemName);
-            addToList.subItems[0].text = photoItemID;
-    };
-
-
-};
 
 var photosToCompsCounter = 0;
 function createCompsFcn(){
