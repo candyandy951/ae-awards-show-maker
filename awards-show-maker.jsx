@@ -326,6 +326,9 @@ var photoLayerSelGroup = templatePanel.add("group", undefined, {name: "photoLaye
 var photoLayerSelButton = photoLayerSelGroup.add("button", undefined, undefined, {name: "photoLayerSelButton"}); 
     photoLayerSelButton.text = "Select Photo Layer"; 
     photoLayerSelButton.preferredSize.width = 140; 
+    photoLayerSelButton.onClick = function(){
+        asmPhotoLayerID = selectSingleCompLayer("[object AVLayer]","Nested Comp",photoLayerEditText);
+    };
 
 var photoLayerEditText = photoLayerSelGroup.add('edittext {properties: {name: "photoLayerEditText", readonly: true}}'); 
     photoLayerEditText.text = "No Layer Selected"; 
@@ -353,6 +356,9 @@ var nameLayerSelGroup = templatePanel.add("group", undefined, {name: "nameLayerS
 var nameLayerSelButton = nameLayerSelGroup.add("button", undefined, undefined, {name: "nameLayerSelButton"}); 
     nameLayerSelButton.text = "Select Name Layer"; 
     nameLayerSelButton.preferredSize.width = 140; 
+    nameLayerSelButton.onClick = function(){
+        asmNameLayerID = selectSingleCompLayer("[object TextLayer]","Text",nameLayerEditText);
+    };
 
 var nameLayerEditText = nameLayerSelGroup.add('edittext {properties: {name: "nameLayerEditText", readonly: true}}'); 
     nameLayerEditText.text = "No Layer Selected"; 
@@ -378,6 +384,10 @@ var subtitle1LayerSelGroup = templatePanel.add("group", undefined, {name: "subti
 
 var subtitle1LayerSelButton = subtitle1LayerSelGroup.add("button", undefined, undefined, {name: "subtitle1LayerSelButton"}); 
     subtitle1LayerSelButton.text = "Select Subtitle 1 Layer"; 
+    subtitle1LayerSelButton.preferredSize.width = 140;
+    subtitle1LayerSelButton.onClick = function(){
+        asmSubtitle1LayerID = selectSingleCompLayer("[object TextLayer]","Text",subtitle1EditText);
+    };
 
 var subtitle1EditText = subtitle1LayerSelGroup.add('edittext {properties: {name: "subtitle1EditText", readonly: true}}'); 
     subtitle1EditText.text = "No Layer Selected"; 
@@ -403,6 +413,10 @@ var subtitle2LayerSelGroup = templatePanel.add("group", undefined, {name: "subti
 
 var subtitle2LayerSelButton = subtitle2LayerSelGroup.add("button", undefined, undefined, {name: "subtitle2LayerSelButton"}); 
     subtitle2LayerSelButton.text = "Select Subtitle 2 Layer"; 
+    subtitle2LayerSelButton.preferredSize.width = 140;
+    subtitle2LayerSelButton.onClick = function(){
+        asmSubtitle2LayerID = selectSingleCompLayer("[object TextLayer]","Text",subtitle2EditText);
+    };
 
 var subtitle2EditText = subtitle2LayerSelGroup.add('edittext {properties: {name: "subtitle2EditText", readonly: true}}'); 
     subtitle2EditText.text = "No Layer Selected"; 
@@ -560,7 +574,11 @@ var asmReturnButton = awardsShowMakerWindow.add("button", undefined, undefined, 
     asmReturnButton.onClick = function(){windowSwap(awardsShowMakerWindow,mainWindow)};
 
 var reviewButton = awardsShowMakerWindow.add("button", undefined, undefined, {name: "reviewButton"}); 
-    reviewButton.text = "REVIEW INPUTS"; 
+    reviewButton.text = "REVIEW"; 
+    reviewButton.onClick = function(){
+        //var globalVars = [asmTemplateCompID,asmPhotoLayerID,asmSubtitle1LayerID,asmSubtitle2LayerID];
+        alert(asmTemplateCompID + "\r" + asmPhotoLayerID + "\r" + asmNameLayerID + "\r"+ asmSubtitle1LayerID +"\r"+ asmSubtitle2LayerID);
+    }
 
 
 
@@ -568,8 +586,11 @@ var reviewButton = awardsShowMakerWindow.add("button", undefined, undefined, {na
 ////////////    GLOBAL VARIABLES     ////////////////////////
 /////////////////////////////////////////////////////////////
 
-var asmTemplateCompID;
-
+var asmTemplateCompID = "None";
+var asmPhotoLayerID = "None";
+var asmNameLayerID = "None";
+var asmSubtitle1LayerID = "None";
+var asmSubtitle2LayerID = "None";
 
 /////////////////////////////////////////////////////////////
 ////////////     GENERAL TOOL FUNCTIONS       ///////////////
@@ -658,6 +679,39 @@ function selectSingleProjectItem(itemTypeString,alertItemType,textToChange){
         textToChange.text = selItem[0].name;
         var selItemID = selItem[0].id;
         return selItemID;
+    };
+};
+
+function selectSingleCompLayer(itemTypeString,alertItemType,textToChange){
+    if(asmTemplateCompID == "None"){
+        alert("Please Select a Template Comp First!")
+        return false;
+    };
+
+    for(var i = 1; i<= app.project.items.length; i++){
+        var itemQuery = app.project.item(i);
+        var selLayers = [];
+        if(itemQuery.id == asmTemplateCompID){
+            for(j = 1; j <= itemQuery.layers.length; j++){
+                if(itemQuery.layer(j).selected == true){
+                    if(itemQuery.layer(j).toString() == itemTypeString){
+                        selLayers[selLayers.length] = itemQuery.layer(j);
+                    }else{
+                        alert("Selected Layer MUST be a " + alertItemType + " Layer");
+                        return false
+                    };
+                };
+            };
+            if(selLayers.length == 0){
+                return false;
+            }else if(selLayers.length > 1){
+                alert("Please Select Only ONE Layer");
+                return false;
+            }else{
+                textToChange.text = "(" + selLayers[0].index + ") " + selLayers[0].name;
+                return selLayers[0].id;
+            };       
+        };
     };
 };
 
