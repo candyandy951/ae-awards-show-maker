@@ -313,7 +313,7 @@ var templateCompSelEditText = selTemplateButton.add('edittext {properties: {name
 var photoLayerCheckBox = templatePanel.add("checkbox", undefined, undefined, {name: "photoLayerCheckBox"}); 
     photoLayerCheckBox.text = "Template Includes a Photo Layer"; 
     photoLayerCheckBox.value = true; 
-    photoLayerCheckBox.onClick = function(){itemHideUnhider(photoLayerSelGroup)};
+    photoLayerCheckBox.onClick = function(){itemHideUnhider(photoLayerSelGroup);itemHideUnhider(photoCompsPanel);};
 
 // PHOTOLAYERSELGROUP
 // ==================
@@ -327,7 +327,7 @@ var photoLayerSelButton = photoLayerSelGroup.add("button", undefined, undefined,
     photoLayerSelButton.text = "Select Photo Layer"; 
     photoLayerSelButton.preferredSize.width = 140; 
     photoLayerSelButton.onClick = function(){
-        asmPhotoLayerID = selectSingleCompLayer("[object AVLayer]","Nested Comp",photoLayerEditText);
+        asmPhotoLayerIndex = selectSingleCompLayer("[object AVLayer]","Nested Comp",photoLayerEditText);
     };
 
 var photoLayerEditText = photoLayerSelGroup.add('edittext {properties: {name: "photoLayerEditText", readonly: true}}'); 
@@ -357,7 +357,7 @@ var nameLayerSelButton = nameLayerSelGroup.add("button", undefined, undefined, {
     nameLayerSelButton.text = "Select Name Layer"; 
     nameLayerSelButton.preferredSize.width = 140; 
     nameLayerSelButton.onClick = function(){
-        asmNameLayerID = selectSingleCompLayer("[object TextLayer]","Text",nameLayerEditText);
+        asmNameLayerIndex = selectSingleCompLayer("[object TextLayer]","Text",nameLayerEditText);
     };
 
 var nameLayerEditText = nameLayerSelGroup.add('edittext {properties: {name: "nameLayerEditText", readonly: true}}'); 
@@ -386,7 +386,7 @@ var subtitle1LayerSelButton = subtitle1LayerSelGroup.add("button", undefined, un
     subtitle1LayerSelButton.text = "Select Subtitle 1 Layer"; 
     subtitle1LayerSelButton.preferredSize.width = 140;
     subtitle1LayerSelButton.onClick = function(){
-        asmSubtitle1LayerID = selectSingleCompLayer("[object TextLayer]","Text",subtitle1EditText);
+        asmSubtitle1LayerIndex = selectSingleCompLayer("[object TextLayer]","Text",subtitle1EditText);
     };
 
 var subtitle1EditText = subtitle1LayerSelGroup.add('edittext {properties: {name: "subtitle1EditText", readonly: true}}'); 
@@ -415,7 +415,7 @@ var subtitle2LayerSelButton = subtitle2LayerSelGroup.add("button", undefined, un
     subtitle2LayerSelButton.text = "Select Subtitle 2 Layer"; 
     subtitle2LayerSelButton.preferredSize.width = 140;
     subtitle2LayerSelButton.onClick = function(){
-        asmSubtitle2LayerID = selectSingleCompLayer("[object TextLayer]","Text",subtitle2EditText);
+        asmSubtitle2LayerIndex = selectSingleCompLayer("[object TextLayer]","Text",subtitle2EditText);
     };
 
 var subtitle2EditText = subtitle2LayerSelGroup.add('edittext {properties: {name: "subtitle2EditText", readonly: true}}'); 
@@ -444,10 +444,13 @@ var csvSelGroup = csvPanel.add("group", undefined, {name: "csvSelGroup"});
 
 var csvBrowseButton = csvSelGroup.add("button", undefined, undefined, {name: "csvBrowseButton"}); 
     csvBrowseButton.text = "Choose CSV File..."; 
+    csvBrowseButton.onClick = function(){
+        filePathBrowse("Select your CSV file","Acceptable Files:*.csv,*.txt",false,asmCSVFilePath,csvFilePathEdittext);
+    };
 
-var edittext1 = csvSelGroup.add('edittext {properties: {name: "edittext1", readonly: true}}'); 
-    edittext1.text = "No CSV Selected"; 
-    edittext1.preferredSize.width = 250; 
+var csvFilePathEdittext = csvSelGroup.add('edittext {properties: {name: "edittext1", readonly: true}}'); 
+    csvFilePathEdittext.text = "No CSV Selected"; 
+    csvFilePathEdittext.preferredSize.width = 250; 
 
 // CSVLISTSEPGROUP
 // ===============
@@ -576,10 +579,31 @@ var asmReturnButton = awardsShowMakerWindow.add("button", undefined, undefined, 
 var reviewButton = awardsShowMakerWindow.add("button", undefined, undefined, {name: "reviewButton"}); 
     reviewButton.text = "REVIEW"; 
     reviewButton.onClick = function(){
-        //var globalVars = [asmTemplateCompID,asmPhotoLayerID,asmSubtitle1LayerID,asmSubtitle2LayerID];
-        alert(asmTemplateCompID + "\r" + asmPhotoLayerID + "\r" + asmNameLayerID + "\r"+ asmSubtitle1LayerID +"\r"+ asmSubtitle2LayerID);
-    }
+        asmReviewFcn();
+    };
 
+
+
+//REVIEW WINDOW
+var reviewWindow = new Window("palette","Review",undefined,{resizeable: true}); 
+reviewWindow.text = "Photos to Comps Tool"; 
+reviewWindow.orientation = "column"; 
+reviewWindow.alignChildren = ["center","top"]; 
+reviewWindow.spacing = 10; 
+reviewWindow.margins = 16; 
+
+var reviewGroup = reviewWindow.add("group", undefined, {name: "reviewGroup"});
+reviewGroup.orientation = "column"
+
+var reviewStaticText = reviewGroup.add("statictext", undefined, undefined, {name: "reviewStaticText"});
+reviewStaticText.text = "Review Selections:"
+
+var reviewListGroup = reviewGroup.add("group", undefined, {name: "reviewListGroup"});
+var reviewList; //Creates the variable for the review listbox, which gets created and filled in when the review function gets called
+
+var returnToAWSButton = reviewGroup.add("button", undefined, undefined, {name: "returnToAWSButton"});
+returnToAWSButton.text = "Return to Awards Show Maker Window";
+returnToAWSButton.onClick = function(){windowSwap(reviewWindow,awardsShowMakerWindow)};
 
 
 /////////////////////////////////////////////////////////////
@@ -587,10 +611,11 @@ var reviewButton = awardsShowMakerWindow.add("button", undefined, undefined, {na
 /////////////////////////////////////////////////////////////
 
 var asmTemplateCompID = "None";
-var asmPhotoLayerID = "None";
-var asmNameLayerID = "None";
-var asmSubtitle1LayerID = "None";
-var asmSubtitle2LayerID = "None";
+var asmPhotoLayerIndex = "None";
+var asmNameLayerIndex = "None";
+var asmSubtitle1LayerIndex = "None";
+var asmSubtitle2LayerIndex = "None";
+var asmCSVFilePath = "None";
 
 /////////////////////////////////////////////////////////////
 ////////////     GENERAL TOOL FUNCTIONS       ///////////////
@@ -709,12 +734,18 @@ function selectSingleCompLayer(itemTypeString,alertItemType,textToChange){
                 return false;
             }else{
                 textToChange.text = "(" + selLayers[0].index + ") " + selLayers[0].name;
-                return selLayers[0].id;
+                return selLayers[0].index;
             };       
         };
     };
 };
 
+function filePathBrowse(promptString,acceptedFiletypeString,multiItemBoolean,globalStringVar,returnTextbox){
+    var file = new File;
+    file = file.openDlg(promptString,acceptedFiletypeString,multiItemBoolean);
+    globalStringVar = file.fsName;
+    returnTextbox.text = file.fsName;
+};
 
 /////////////////////////////////////////////////////////////
 ////////////      MAIN WINDOW FUNCTIONS       ///////////////
@@ -800,4 +831,38 @@ function createCompsFcn(){
 
     app.endUndoGroup();
     
+};
+
+/////////////////////////////////////////////////////////////
+//////////// AWARDS SHOW MAKER FUNCTIONS    /////////////////
+/////////////////////////////////////////////////////////////
+
+function asmReviewFcn(){
+    //alert(asmTemplateCompID + "\r" + asmPhotoLayerIndex + "\r" + asmNameLayerIndex + "\r"+ asmSubtitle1LayerIndex +"\r"+ asmSubtitle2LayerIndex);
+
+    var numReviewColumns = 0;
+    var reviewColumnTitles = [];
+    if(photoLayerCheckBox.value == true){
+        numReviewColumns++;
+        numReviewColumns++;
+        reviewColumnTitles[reviewColumnTitles.length] = "Photo:";
+        reviewColumnTitles[reviewColumnTitles.length] = "Photo ID:";
+    };
+    if(nameLayerCheckBox.value == true){
+        numReviewColumns++;
+        reviewColumnTitles[reviewColumnTitles.length] = "Name:";
+    };
+    if(subtitle1LayerCheckBox.value == true){
+        numReviewColumns++;
+        reviewColumnTitles[reviewColumnTitles.length] = "Subtitle 1:";
+    };
+    if(subtitle2LayerCheckBox.value == true){
+        numReviewColumns++;
+        reviewColumnTitles[reviewColumnTitles.length] = "Subtitle 2:";
+    };
+    //alert(numReviewColumns);
+
+    reviewList = reviewListGroup.add("listbox", undefined, undefined, {name: "reviewListBox", items: [""], numberOfColumns: numReviewColumns, columnTitles: reviewColumnTitles, showHeaders: true, multiselect:true});
+
+    windowSwap(awardsShowMakerWindow,reviewWindow);
 };
