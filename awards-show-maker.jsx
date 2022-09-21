@@ -579,7 +579,44 @@ var asmReturnButton = awardsShowMakerWindow.add("button", undefined, undefined, 
 var reviewButton = awardsShowMakerWindow.add("button", undefined, undefined, {name: "reviewButton"}); 
     reviewButton.text = "REVIEW"; 
     reviewButton.onClick = function(){
-        asmReviewFcn();
+        //Error check for template selection
+        if(templateCompSelEditText.text == "No Comp Selected"){
+            alert("No Template Comp Chosen!\r\rYou MUST select a template comp to create the awards show with");
+            return false;
+        };
+        //Error check for having chosen any content to inject into the template
+        if(photoLayerCheckBox.value == false &&  nameLayerCheckBox.value == false && subtitle1LayerCheckBox.value == false && subtitle2LayerCheckBox.value == false){
+            alert("Your template MUST include at least one of the following: \r A Photo, a Name, or a Subtitle.");
+            return false;
+        };
+        //Error checks for template layers being toggled but not being selected
+        if(photoLayerCheckBox.value == true && photoLayerEditText.text == "No Layer Selected"){
+            alert("Photo layer option checked, but no photo layer has been selected\r\rPlease select a photo layer in your template");
+            return false;
+        };
+
+        if(nameLayerCheckBox.value == true && nameLayerEditText.text == "No Layer Selected"){
+            alert("Name layer option checked, but no name layer has been selected\r\rPlease select a name layer in your template");
+            return false;
+        };
+
+        if(subtitle1LayerCheckBox.value == true && subtitle1EditText.text == "No Layer Selected"){
+            alert("Subtitle 1 layer option checked, but no layer has been selected\r\rPlease select a subtitle layer in your template");
+            return false;
+        };
+
+        if(subtitle2LayerCheckBox.value == true && subtitle2EditText.text == "No Layer Selected"){
+            alert("Subtitle 2 layer option checked, but no layer has been selected\r\rPlease select a subtitle layer in your template");
+            return false;
+        };
+
+        var reviewWindowErrorCheck = asmReviewFcn();
+
+        if(reviewWindowErrorCheck == false){
+            return false
+        }else{
+            windowSwap(awardsShowMakerWindow,reviewWindow);
+        };
     };
 
 
@@ -595,20 +632,28 @@ reviewWindow.margins = 16;
 var reviewGroup = reviewWindow.add("group", undefined, {name: "reviewGroup"});
 reviewGroup.orientation = "column"
 
-var reviewStaticText = reviewGroup.add("statictext", undefined, undefined, {name: "reviewStaticText"});
-reviewStaticText.text = "Review Selections:"
-
-var reviewListGroup = reviewGroup.add("group", undefined, {name: "reviewListGroup"});
-var reviewList; //Creates the variable for the review listbox, which gets created and filled in when the review function gets called
-
 var returnToAWSButton = reviewGroup.add("button", undefined, undefined, {name: "returnToAWSButton"});
 returnToAWSButton.text = "Return to Awards Show Maker Window";
+returnToAWSButton.alignment = ["left","top"]; 
 returnToAWSButton.onClick = function(){windowSwap(reviewWindow,awardsShowMakerWindow)};
+
+var reviewStaticText = reviewGroup.add("statictext", undefined, undefined, {name: "reviewStaticText"});
+reviewStaticText.text = "Review Selections:"
+reviewStaticText.alignment = ["left","top"];
+
+var reviewListGroup = reviewGroup.add("group", undefined, {name: "reviewListGroup"});
+var reviewList = undefined; //Creates the variable for the review listbox, which gets created and filled in when the review function gets called
+
+var runAWSButton = reviewGroup.add("button", undefined, undefined, {name: "runAWSButton"});
+runAWSButton.text = "CONFIRM & RUN";
+runAWSButton.onClick = function(){awsFunction()};
 
 
 /////////////////////////////////////////////////////////////
 ////////////    GLOBAL VARIABLES     ////////////////////////
 /////////////////////////////////////////////////////////////
+var photosToCompsCounter = 0;
+var asmCounter = 0;
 
 var asmTemplateCompID = "None";
 var asmPhotoLayerIndex = "None";
@@ -617,8 +662,13 @@ var asmSubtitle1LayerIndex = "None";
 var asmSubtitle2LayerIndex = "None";
 var asmCSVFilePath = "None";
 
+var nameReviewCol = "None";
+var sub1ReviewCol = "None";
+var sub2ReviewCol = "None";
+var photoCompIDReviewCol = "None";
+
 /////////////////////////////////////////////////////////////
-////////////     GENERAL TOOL FUNCTIONS       ///////////////
+////////////     GENERAL UTILITY FUNCTIONS       ///////////////
 /////////////////////////////////////////////////////////////
 
 function textBoxNumErrorChecker(userInput,alertItem){
@@ -694,8 +744,6 @@ function selectSingleProjectItem(itemTypeString,alertItemType,textToChange){
         };
     };
 
-
-
     if(selItem.length == 0){
         return false;
     }else if(selItem.length > 1){
@@ -740,11 +788,53 @@ function selectSingleCompLayer(itemTypeString,alertItemType,textToChange){
     };
 };
 
+//Function to open a browser window and select a file
 function filePathBrowse(promptString,acceptedFiletypeString,multiItemBoolean,globalStringVar,returnTextbox){
     var file = new File;
-    file = file.openDlg(promptString,acceptedFiletypeString,multiItemBoolean);
-    globalStringVar = file.fsName;
-    returnTextbox.text = file.fsName;
+    file = file.openDlg(promptString,acceptedFiletypeString,multiItemBoolean); //Prompt string is what the text box says on top, accepted filetype string is the accepted filetypes, multiitemboolean is T/F for multiple file selections
+    globalStringVar = file.fsName; //This sends the filepath to a given global variable
+    returnTextbox.text = file.fsName; //This sends the filepath to a given ScriptUI textbox
+};
+
+//Function to replace the text content of a text layer given a specific comp and layer index
+function textReplacer(textCompIndex,textLayerIndex,textToReplaceWith){
+
+    var textLayer = app.project.item(textCompIndex).layer(textLayerIndex);
+    var textLayerSourceText = textLayer.property("Source Text");
+    var textLayerTextDocument = textLayerSourceText.value;
+    textLayerTextDocument.text = textToReplaceWith;
+    textLayerSourceText.setValue(textLayerTextDocument);
+};
+
+//Function to replace the source of a given layer in a given comp with another source
+function layerReplacer(layerCompIndex,layerToReplaceIndex,itemToReplaceWithID){
+    var itemToReplaceWithIndex;
+    for(var i = 1; i <= app.project.numItems; i++){
+        if(app.project.item(i).id == itemToReplaceWithID){
+            itemToReplaceWithIndex = i;
+        };
+    };
+    
+    var replacementItem = app.project.item(itemToReplaceWithIndex);
+    app.project.item(layerCompIndex).layer(layerToReplaceIndex).replaceSource(replacementItem,true);
+
+};
+
+//Function to read list and pull/return data from it
+function pullFromList(listName,columnNumber,rowNumber){
+    var valToReturn;
+    if(columnNumber == "None"){
+        return "None";
+    };
+
+    if(columnNumber == 0){
+        valToReturn = listName.items[rowNumber].text;
+        return valToReturn;
+    }else{
+        var subItemNum = columnNumber-1;
+        valToReturn = listName.items[rowNumber].subItems[subItemNum].text;
+        return valToReturn;
+    };
 };
 
 /////////////////////////////////////////////////////////////
@@ -760,7 +850,6 @@ function helpButtonFcn(){
 ////////////    PHOTOS TO COMPS FUNCTIONS     ///////////////
 /////////////////////////////////////////////////////////////
 
-var photosToCompsCounter = 0;
 function createCompsFcn(){
 
     app.beginUndoGroup("Photos to Comps");
@@ -840,29 +929,208 @@ function createCompsFcn(){
 function asmReviewFcn(){
     //alert(asmTemplateCompID + "\r" + asmPhotoLayerIndex + "\r" + asmNameLayerIndex + "\r"+ asmSubtitle1LayerIndex +"\r"+ asmSubtitle2LayerIndex);
 
-    var numReviewColumns = 0;
-    var reviewColumnTitles = [];
-    if(photoLayerCheckBox.value == true){
-        numReviewColumns++;
-        numReviewColumns++;
-        reviewColumnTitles[reviewColumnTitles.length] = "Photo:";
-        reviewColumnTitles[reviewColumnTitles.length] = "Photo ID:";
+    if(reviewList){ //This checks to see if the reviewList exists yet, the first time the script runs it does not exist. If the list does exist, this will remove the old one to be replaced
+        reviewListGroup.remove(reviewList);
     };
+
+    //This whole section prepares variables to be used to create the review list
+    var numReviewColumns = 0;
+    nameReviewCol = "None";
+    sub1ReviewCol = "None";
+    sub2ReviewCol = "None";
+    photoCompIDReviewCol = "None";
+    var reviewColumnTitles = [];
     if(nameLayerCheckBox.value == true){
         numReviewColumns++;
         reviewColumnTitles[reviewColumnTitles.length] = "Name:";
+        nameReviewCol = numReviewColumns-1;
     };
     if(subtitle1LayerCheckBox.value == true){
         numReviewColumns++;
         reviewColumnTitles[reviewColumnTitles.length] = "Subtitle 1:";
+        sub1ReviewCol = numReviewColumns-1;
     };
     if(subtitle2LayerCheckBox.value == true){
         numReviewColumns++;
         reviewColumnTitles[reviewColumnTitles.length] = "Subtitle 2:";
+        sub2ReviewCol = numReviewColumns-1;
     };
-    //alert(numReviewColumns);
+    if(photoLayerCheckBox.value == true){
+        numReviewColumns++;
+        numReviewColumns++;
+        reviewColumnTitles[reviewColumnTitles.length] = "Photo Comp:";
+        reviewColumnTitles[reviewColumnTitles.length] = "Photo Comp ID:";
+        photoCompIDReviewCol = numReviewColumns-1;
+    };
 
-    reviewList = reviewListGroup.add("listbox", undefined, undefined, {name: "reviewListBox", items: [""], numberOfColumns: numReviewColumns, columnTitles: reviewColumnTitles, showHeaders: true, multiselect:true});
+    reviewList = reviewListGroup.add("listbox", undefined, undefined, {name: "reviewListBox", numberOfColumns: numReviewColumns, columnTitles: reviewColumnTitles, showHeaders: true, multiselect:true});
+    reviewList.preferredSize.width = 800;
+    reviewList.preferredSize.height = 300;
+    reviewListGroup.layout.layout(true); //This refreshes the reviewListGroup's layout, it's not necessary for the first run, but is needed to replace the review list with any changes made to it
 
-    windowSwap(awardsShowMakerWindow,reviewWindow);
+    //Populate review list if a CSV is present, will add photo comps if applicable
+    var csvChecker = false; //this checker is used while populating the list to determine if a CSV is in use or not
+    if(nameLayerCheckBox.value == true || subtitle1LayerCheckBox.value == true || subtitle2LayerCheckBox.value == true){ //If statement will skip parsing CSV if it's not needed (for example, if only photos are involved)
+        csvChecker = true;
+        var csvFile;
+        var csvData = [];
+
+        if(csvFilePathEdittext.text == "No CSV Selected"){ //Error checks to make sure a CSV filepath was chosen
+            alert("A CSV file must be selected to use the current settings");
+            return false;
+        };
+        
+        csvFile = File(csvFilePathEdittext.text);
+        csvFile.open("r"); //opens the CSV in "read" mode
+
+        do{
+            csvData.push(csvFile.readln());
+        }while(!csvFile.eof);
+
+        csvFile.close();
+
+        var csvOffset; //This variable is used in the for loop that inserts the csv data into the review list, it's needed due to the header row checkbox
+        if(csvHeaderRowCheckbox.value == true){
+            csvOffset = 1;
+        }else{
+            csvOffset = 0;
+        };
+
+        if(photoLayerCheckBox.value == true && (csvData.length-csvOffset) !== selectedPhotoCompsList.items.length){
+            alert("The number of photo comps must match the number of entries in the CSV!\r\r"  + (csvData.length-csvOffset) + " Entries in CSV\r" + selectedPhotoCompsList.items.length + " Selected Photo Comps" + "\r\r*You may need to double check that your header row toggle is correct");
+            return false //This should be considered a bug, I can probably fix it by having multiple lists in the review page instead of only one with multiple columns.
+        };
+
+        for(var i = 0; i < (csvData.length-csvOffset); i++){ //Right now the CSV length drives the for loop duration
+        //-1 is added to the list length becuase technically the list starts at 0, not 1, which offsets the perceived length
+            var csvRow = csvData[i+csvOffset].split(csvListSepEditText.text);
+            var itemsToAddToReview = [];
+
+            if(nameLayerCheckBox.value == true){
+                if(csvLastNameColCheckBox.value == true){
+                    itemsToAddToReview[itemsToAddToReview.length] = csvRow[csvNameColEditText.text] + " " + csvRow[csvLastNameColEditText.text];
+                }else{
+                    itemsToAddToReview[itemsToAddToReview.length] = csvRow[csvNameColEditText.text];
+                };
+            };
+            if(subtitle1LayerCheckBox.value == true){
+                itemsToAddToReview[itemsToAddToReview.length] = csvRow[csvSubtitle1ColEditText.text];
+            };
+            if(subtitle2LayerCheckBox.value == true){
+                itemsToAddToReview[itemsToAddToReview.length] = csvRow[csvSubtitle2ColEditText.text];
+            };
+            if(photoLayerCheckBox.value == true){
+                itemsToAddToReview[itemsToAddToReview.length] = selectedPhotoCompsList.items[i].text;
+                itemsToAddToReview[itemsToAddToReview.length] = selectedPhotoCompsList.items[i].subItems[0];
+            };
+
+            //alert(itemsToAddToReview);
+            
+            
+            var addToReviewList = reviewList.add("item",itemsToAddToReview[0]);
+            
+            for(var v = 1; v < numReviewColumns; v++){
+                addToReviewList.subItems[v-1].text = itemsToAddToReview[v];
+            };
+            
+        };
+    };
+
+    
+
+    //DUPLICATE PHOTO COMP LIST INTO REVIEW LIST IF APPLICABLE
+    if(csvChecker == false){
+        //To point to a listitem, you need to specify the list.items[0] which dictates the row (running .text on this will give the first column's result), then subsequent columns can be called with .subItems[X] with X starting at 0 to call column 2
+        
+        for(var p = 0; p < selectedPhotoCompsList.items.length; p++){ 
+            var photoCompNameToAdd = selectedPhotoCompsList.items[p].text;
+            var addToReviewList = reviewList.add("item",photoCompNameToAdd);
+
+            var photoCompIDToAdd = selectedPhotoCompsList.items[p].subItems[0];
+            addToReviewList.subItems[0].text = photoCompIDToAdd;
+        };
+        //alert(selectedPhotoCompsList.items.length);
+        //alert(selectedPhotoCompsList.items[0].text + "\r" + selectedPhotoCompsList.items[0].subItems[0].text);
+        
+    };
+
+};
+
+function awsFunction(){
+    app.beginUndoGroup("Awards Show Maker");
+
+    /*
+    alert("ERROR CHECKER" + "\r\rName col: " + nameReviewCol + "\rSub1 col: " + sub1ReviewCol + "\rSub2 col: " + sub2ReviewCol + "\rPhoto ID col: " + photoCompIDReviewCol + 
+            "\r\rTemplate Comp ID: " + asmTemplateCompID + "\rName Layer Index: " + asmNameLayerIndex + "\rSub1 Layer Index: " + asmSubtitle1LayerIndex +
+            "\rSub2 Layer Index: " + asmSubtitle2LayerIndex + "\rPhoto Layer Index: " + asmPhotoLayerIndex);
+    */
+
+    //CONVERT TEMPLATE COMP ID TO INDEX
+    var asmTemplateCompIndex;
+    for(var q = 1; q <= app.project.numItems; q++){
+        if(app.project.item(q).id == asmTemplateCompID){
+            asmTemplateCompIndex = q;
+        };
+    };
+
+    var asmTemplateComp = app.project.item(asmTemplateCompIndex);
+    
+    //CREATE NEW FOLDER
+    asmCounter++;
+    var awardShowMakerFolder = app.project.items.addFolder("Award Show Maker "+asmCounter);
+    awardShowMakerFolder.parentFolder = asmTemplateComp.parentFolder;
+
+    for(var a = 0; a < reviewList.items.length; a++){
+        var numIter; //This whole section makes it so the newly created comps sort correctly by adding a numeral to the start of the comp name
+        if(a < 9){
+            numIter = "0"+(a+1);
+        }else{
+            numIter = (a+1);
+        };
+
+        //This section pulls the information from the review list and applies it to a variable
+        var nameInsert = pullFromList(reviewList,nameReviewCol,a);
+        var subtitle1Insert = pullFromList(reviewList,sub1ReviewCol,a);
+        var subtitle2Insert = pullFromList(reviewList,sub2ReviewCol,a);
+        var photoIDPull = pullFromList(reviewList,photoCompIDReviewCol,a);
+
+        var compName;
+        if(nameLayerCheckBox.value == false){
+            compName = numIter;            
+        }else{
+            compName = numIter + " " + nameInsert;
+        }
+        //alert("Comp Name: " + compName + "\rName: " + nameInsert + "\rSub1: " + subtitle1Insert + "\rSub2: " + subtitle2Insert + "\rPhotoID: " + photoIDPull);
+    
+        //DUPLICATE TEMPLATE COMP
+        var dupTempComp = asmTemplateComp.duplicate();
+        dupTempComp.name = compName;
+        dupTempComp.parentFolder = awardShowMakerFolder;
+        var dupCompID = dupTempComp.id;
+        var dupCompIndex;
+        for(var i = 1; i <= app.project.numItems; i++){ //For loop needs to find the index of the new comp based on the comp's ID
+            if(app.project.item(i).id == dupCompID){
+                dupCompIndex = i;
+            };
+        };
+        
+        if(photoLayerCheckBox.value == true){
+            layerReplacer(dupCompIndex,asmPhotoLayerIndex,photoIDPull);
+        };
+
+        if(nameLayerCheckBox.value == true){
+            textReplacer(dupCompIndex,asmNameLayerIndex,nameInsert);
+        };
+
+        if(subtitle1LayerCheckBox.value == true){
+            textReplacer(dupCompIndex,asmSubtitle1LayerIndex,subtitle1Insert);
+        };
+
+        if(subtitle2LayerCheckBox.value == true){
+            textReplacer(dupCompIndex,asmSubtitle2LayerIndex,subtitle2Insert);
+        };
+        
+    };
+
+    app.endUndoGroup;
 };
