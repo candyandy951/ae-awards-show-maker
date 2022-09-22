@@ -6,7 +6,7 @@ Code for Import https://scriptui.joonas.me — (Triple click to select):
 // MAINWINDOW
 // ==========
 var mainWindow = new Window("palette"); 
-    mainWindow.text = "Awards Maker Script"; 
+    mainWindow.text = "Awards Show Maker Menu"; 
     mainWindow.orientation = "column"; 
     //mainWindow.alignChildren = ["center","top"]; 
     mainWindow.spacing = 10; 
@@ -33,7 +33,7 @@ var awardsShowMakerButton = mainButtonsGrp.add("button", undefined, undefined, {
 var helpButton = mainButtonsGrp.add("button", undefined, undefined, {name: "helpButton"}); 
     helpButton.text = "Help..."; 
     helpButton.preferredSize.width = 155; 
-    helpButton.onClick = helpButtonFcn;
+    helpButton.onClick = function(){windowSwap(mainWindow,helpWindow)};
 
 mainWindow.show();
 
@@ -655,6 +655,25 @@ reviewWindow.onShow = reviewWindow.onResize = reviewWindow.onResizing = function
     this.layout.resize();
 };
 
+//HELP WINDOW
+var helpWindow = new Window("palette","Help",undefined,{resizeable: false});
+helpWindow.text = "Help";
+helpWindow.orientation = "column";
+
+var helpReturnToMenuButton = helpWindow.add("button",undefined);
+helpReturnToMenuButton.text = "Return to Menu";
+helpReturnToMenuButton.onClick = function(){windowSwap(helpWindow,mainWindow)};
+helpReturnToMenuButton.alignment = ["left","top"];
+
+var helpText1 = helpWindow.add("statictext",undefined,undefined,{name: "helpText1"});
+helpText1.text = "For help, please visit the GitHub page for this script at:"
+
+var helpURL = "https://github.com/candyandy951/"
+var helpEditText2 = helpWindow.add("edittext",undefined,helpURL,{readonly:true});
+helpEditText2.preferredSize.width = 300;
+
+var helpText3 = helpWindow.add("statictext",undefined,undefined,{multiline:true});
+helpText3.text = "(Copy and paste the above URL into your browser)\r\r...I probably could have created a hyperlink here, but that turned out to be complicated and I know you're smart enough to do a little bit of copy-paste!";
 
 /////////////////////////////////////////////////////////////
 ////////////    GLOBAL VARIABLES     ////////////////////////
@@ -849,15 +868,6 @@ function pullFromList(listName,columnNumber,rowNumber){
         return valToReturn;
     };
 };
-
-/////////////////////////////////////////////////////////////
-////////////      MAIN WINDOW FUNCTIONS       ///////////////
-/////////////////////////////////////////////////////////////
-
-function helpButtonFcn(){
-    alert("Help Button No Worky Yet");
-};
-
 
 /////////////////////////////////////////////////////////////
 ////////////    PHOTOS TO COMPS FUNCTIONS     ///////////////
