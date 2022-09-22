@@ -208,8 +208,7 @@ var ptcReturnButton = inputsGroup.add("button", undefined, undefined, {name: "pt
     ptcReturnButton.text = "Return to Menu";
     ptcReturnButton.onClick = function(){windowSwap(photosToCompsWindow,mainWindow);};
 
-// PHOTOSTOCOMPSWINDOW
-// ===================
+
 var divider2 = photosToCompsWindow.add("panel", undefined, undefined, {name: "divider2"}); 
     divider2.alignment = "fill"; 
 
@@ -327,7 +326,7 @@ var photoLayerSelButton = photoLayerSelGroup.add("button", undefined, undefined,
     photoLayerSelButton.text = "Select Photo Layer"; 
     photoLayerSelButton.preferredSize.width = 140; 
     photoLayerSelButton.onClick = function(){
-        asmPhotoLayerIndex = selectSingleCompLayer("[object AVLayer]","Nested Comp",photoLayerEditText);
+        asmPhotoLayerIndex = selectSingleCompLayer(asmTemplateCompID,"[object AVLayer]","AV (with a replaceable source)",photoLayerEditText);
     };
 
 var photoLayerEditText = photoLayerSelGroup.add('edittext {properties: {name: "photoLayerEditText", readonly: true}}'); 
@@ -357,7 +356,7 @@ var nameLayerSelButton = nameLayerSelGroup.add("button", undefined, undefined, {
     nameLayerSelButton.text = "Select Name Layer"; 
     nameLayerSelButton.preferredSize.width = 140; 
     nameLayerSelButton.onClick = function(){
-        asmNameLayerIndex = selectSingleCompLayer("[object TextLayer]","Text",nameLayerEditText);
+        asmNameLayerIndex = selectSingleCompLayer(asmTemplateCompID,"[object TextLayer]","Text",nameLayerEditText);
     };
 
 var nameLayerEditText = nameLayerSelGroup.add('edittext {properties: {name: "nameLayerEditText", readonly: true}}'); 
@@ -386,7 +385,7 @@ var subtitle1LayerSelButton = subtitle1LayerSelGroup.add("button", undefined, un
     subtitle1LayerSelButton.text = "Select Subtitle 1 Layer"; 
     subtitle1LayerSelButton.preferredSize.width = 140;
     subtitle1LayerSelButton.onClick = function(){
-        asmSubtitle1LayerIndex = selectSingleCompLayer("[object TextLayer]","Text",subtitle1EditText);
+        asmSubtitle1LayerIndex = selectSingleCompLayer(asmTemplateCompID,"[object TextLayer]","Text",subtitle1EditText);
     };
 
 var subtitle1EditText = subtitle1LayerSelGroup.add('edittext {properties: {name: "subtitle1EditText", readonly: true}}'); 
@@ -415,7 +414,7 @@ var subtitle2LayerSelButton = subtitle2LayerSelGroup.add("button", undefined, un
     subtitle2LayerSelButton.text = "Select Subtitle 2 Layer"; 
     subtitle2LayerSelButton.preferredSize.width = 140;
     subtitle2LayerSelButton.onClick = function(){
-        asmSubtitle2LayerIndex = selectSingleCompLayer("[object TextLayer]","Text",subtitle2EditText);
+        asmSubtitle2LayerIndex = selectSingleCompLayer(asmTemplateCompID,"[object TextLayer]","Text",subtitle2EditText);
     };
 
 var subtitle2EditText = subtitle2LayerSelGroup.add('edittext {properties: {name: "subtitle2EditText", readonly: true}}'); 
@@ -578,7 +577,7 @@ var asmReturnButton = awardsShowMakerWindow.add("button", undefined, undefined, 
 
 var reviewButton = awardsShowMakerWindow.add("button", undefined, undefined, {name: "reviewButton"}); 
     reviewButton.text = "REVIEW"; 
-    reviewButton.onClick = function(){
+    reviewButton.onClick = function(){ //The review button has a lot of error checks on it before it actually builds the review list
         //Error check for template selection
         if(templateCompSelEditText.text == "No Comp Selected"){
             alert("No Template Comp Chosen!\r\rYou MUST select a template comp to create the awards show with");
@@ -613,7 +612,7 @@ var reviewButton = awardsShowMakerWindow.add("button", undefined, undefined, {na
         var reviewWindowErrorCheck = asmReviewFcn();
 
         if(reviewWindowErrorCheck == false){
-            return false
+            return false //This is here to stop the windows from swapping if the ReviewFunction itself throws an error.
         }else{
             windowSwap(awardsShowMakerWindow,reviewWindow);
         };
@@ -625,9 +624,11 @@ var reviewButton = awardsShowMakerWindow.add("button", undefined, undefined, {na
 var reviewWindow = new Window("palette","Review",undefined,{resizeable: true}); 
 reviewWindow.text = "Photos to Comps Tool"; 
 reviewWindow.orientation = "column"; 
-reviewWindow.alignChildren = ["center","top"]; 
+//reviewWindow.alignChildren = ["center","top"]; 
+reviewWindow.alignChildren = ["fill","fill"]; 
 reviewWindow.spacing = 10; 
-reviewWindow.margins = 16; 
+reviewWindow.margins = 16;
+reviewWindow.preferredSize = [500,300];
 
 var reviewGroup = reviewWindow.add("group", undefined, {name: "reviewGroup"});
 reviewGroup.orientation = "column"
@@ -642,11 +643,17 @@ reviewStaticText.text = "Review Selections:"
 reviewStaticText.alignment = ["left","top"];
 
 var reviewListGroup = reviewGroup.add("group", undefined, {name: "reviewListGroup"});
+reviewListGroup.alignment=["fill","fill"];
 var reviewList = undefined; //Creates the variable for the review listbox, which gets created and filled in when the review function gets called
 
 var runAWSButton = reviewGroup.add("button", undefined, undefined, {name: "runAWSButton"});
 runAWSButton.text = "CONFIRM & RUN";
+runAWSButton.alignment = ["center","bottom"];
 runAWSButton.onClick = function(){awsFunction()};
+
+reviewWindow.onShow = reviewWindow.onResize = reviewWindow.onResizing = function(){
+    this.layout.resize();
+};
 
 
 /////////////////////////////////////////////////////////////
@@ -671,6 +678,7 @@ var photoCompIDReviewCol = "None";
 ////////////     GENERAL UTILITY FUNCTIONS       ///////////////
 /////////////////////////////////////////////////////////////
 
+//This function is used to determine if an entry into an EditText box is a number or not
 function textBoxNumErrorChecker(userInput,alertItem){
     if(isNaN(userInput) == true){
         alert(alertItem+" Must Be a Number!");
@@ -680,17 +688,20 @@ function textBoxNumErrorChecker(userInput,alertItem){
     };
 };
 
+//This function is used to delete items from a given list
 function deleteMultiSelectedListItems(listVar){
     for(var i = listVar.selection.length-1; i>-1; i--){
         listVar.remove(listVar.selection[i]);
     };
 };
 
+//WindowSwap function hides one window and shows another
 function windowSwap(winToHide,winToShow){
     winToHide.hide();
     winToShow.show();
 };
 
+//itemHideUnhider toggles the hidden status of a given item depending on its current status
 function itemHideUnhider(item){
     if(item.visible == true){
         item.hide();
@@ -699,7 +710,7 @@ function itemHideUnhider(item){
     };
 };
 
-function selectItemNameIDList(itemTypeString,alertItemType,listToAdd){ //function runs through the project and puts selected item names and IDs into a given list
+function selectItemNameIDList(itemTypeString,alertItemType,listToAdd){ //function runs through the project and puts selected item names and IDs into a given list, list must have at least 2 columns
     
     var selItems = []; //Clears the global variable
 
@@ -715,21 +726,22 @@ function selectItemNameIDList(itemTypeString,alertItemType,listToAdd){ //functio
     };
 
     if(selItems.length == 0){
-        //alert("No items selected, please select an item");
+        //alert("No items selected, please select an item"); //Removed this error throw since it's arguably clear that a selection is needed when nothing happens
         return false;
     };
 
     listToAdd.removeAll(); //Clears displayed list
-    for (var j = 0; j <= selItems.length; j++){
+    for (var j = 0; j <= selItems.length; j++){ //For loop adds newly selected items into the list
         var itemName = selItems[j].name;
         var itemID = selItems[j].id;
         var addToList = listToAdd.add("item",itemName);
-            addToList.subItems[0].text = itemID;
+            addToList.subItems[0].text = itemID; //This function will probably only work for lists with two columns...
     };
 
 
 };
 
+//Function returns a selected item's ID and also changes an edit text to the item's name.
 function selectSingleProjectItem(itemTypeString,alertItemType,textToChange){
     var selItem = [];
 
@@ -755,8 +767,9 @@ function selectSingleProjectItem(itemTypeString,alertItemType,textToChange){
     };
 };
 
-function selectSingleCompLayer(itemTypeString,alertItemType,textToChange){
-    if(asmTemplateCompID == "None"){
+//This function finds a selected layer in a given comp then returns the index of the selected layer while also changing an EditText to the layer's name
+function selectSingleCompLayer(givenCompID,itemTypeString,alertItemType,textToChange){
+    if(givenCompID == "None"){
         alert("Please Select a Template Comp First!")
         return false;
     };
@@ -764,7 +777,7 @@ function selectSingleCompLayer(itemTypeString,alertItemType,textToChange){
     for(var i = 1; i<= app.project.items.length; i++){
         var itemQuery = app.project.item(i);
         var selLayers = [];
-        if(itemQuery.id == asmTemplateCompID){
+        if(itemQuery.id == givenCompID){
             for(j = 1; j <= itemQuery.layers.length; j++){
                 if(itemQuery.layer(j).selected == true){
                     if(itemQuery.layer(j).toString() == itemTypeString){
@@ -827,7 +840,7 @@ function pullFromList(listName,columnNumber,rowNumber){
         return "None";
     };
 
-    if(columnNumber == 0){
+    if(columnNumber == 0){ //Since list items call the first column differently from all others, we need this if statement to see if we're looking at the first column or not
         valToReturn = listName.items[rowNumber].text;
         return valToReturn;
     }else{
@@ -860,7 +873,6 @@ function createCompsFcn(){
     for(var i = 0; i <= selItemsList.items.length-1; i++){
         selPhotoItemIDs[selPhotoItemIDs.length] = selItemsList.items[i].subItems[0]; //creates array of item IDs
     };
-    //alert(selPhotoItemIDs);
 
     for(var j = 0; j <= selPhotoItemIDs.length-1; j++){
         var footageID = selPhotoItemIDs[j];
@@ -879,8 +891,8 @@ function createCompsFcn(){
 
     photosToCompsCounter++
 
-    var photosToCompsFolder = app.project.items.addFolder("Photos to Comps "+photosToCompsCounter);
-    photosToCompsFolder.parentFolder = selFootageItems[0].parentFolder;
+    var photosToCompsFolder = app.project.items.addFolder("Photos to Comps "+photosToCompsCounter); //Creates a folder for all the newly created comps
+    photosToCompsFolder.parentFolder = selFootageItems[0].parentFolder; //Places the folder in the same parent folder as the footage items
 
     var newCompWidth = parseInt(compWidthEditText.text);
     var newCompHeight = parseInt(compHeightEditText.text);
@@ -889,51 +901,55 @@ function createCompsFcn(){
     var newCompPixelAspect = parseInt(compPixelAspectEditText.text);
 
     for(var m = 0; m <= selFootageItems.length-1; m++){
-        var newComp = app.project.items.addComp(selFootageItems[m].name+" COMP",newCompWidth,newCompHeight,newCompPixelAspect,newCompDuration,newCompFramerate);
+        var newComp = app.project.items.addComp(selFootageItems[m].name+" COMP",newCompWidth,newCompHeight,newCompPixelAspect,newCompDuration,newCompFramerate); //Creates a new comp to place the footage item into
         newComp.parentFolder = photosToCompsFolder;
 
-        var imageLayer = newComp.layers.add(selFootageItems[m]);
+        var imageLayer = newComp.layers.add(selFootageItems[m]); //adds the footage item to the comp
         var fitWidthScale = (newComp.width*newComp.pixelAspect)/(imageLayer.width*imageLayer.source.pixelAspect)*100; //This is essentially the same thing as "fit to comp width" just by using math instead
         imageLayer.property("Scale").setValue([fitWidthScale,fitWidthScale]);
         
+        //In order to detect if a fit to height needs to occur, we need to add an adjustment layer to detect pixel content
         var tempAdjustmentLayer = newComp.layers.addSolid([0,0,0],"tempAdjustmentLayer",newCompWidth,newCompHeight,newCompPixelAspect,newCompDuration);
         tempAdjustmentLayer.adjustmentLayer = true;
-        var pointControl = tempAdjustmentLayer.Effects.addProperty("ADBE Point Control");
+        var pointControl = tempAdjustmentLayer.Effects.addProperty("ADBE Point Control"); //Add a point control to determine a pixel to "look" at
         var point = pointControl.property(1);
         point.setValue([0,0]); //sets the point to be top center
 
-        var tempTextLayer = newComp.layers.addText();
+        var tempTextLayer = newComp.layers.addText(); //New text layer receives an expression on the source text to sample the image of the temp adjustment layer (which is effectively seeing all content of the comp as it is index 1)
         tempTextLayer.property("Source Text").expression = 
-            'target = thisComp.layer("tempAdjustmentLayer"); point = thisComp.layer("tempAdjustmentLayer").effect("Point Control")("Point"); target.sampleImage(point,[0.5,0.5], true, time)[3];';
+            'target = thisComp.layer("tempAdjustmentLayer"); point = thisComp.layer("tempAdjustmentLayer").effect("Point Control")("Point"); target.sampleImage(point,[0.5,0.5], true, time)[3];'; //the [3] at the end is what is pulling the alpha channel specifically, since sampleImage returns an array of 4 values: [R,G,B,A]
 
-        var topCenterPxAlpha = tempTextLayer.property("Source Text").value;
-        if(topCenterPxAlpha == 0){
+        var topCenterPxAlpha = tempTextLayer.property("Source Text").value; //reads the output of the expression as presented in the text layer to determine the alpha of the top center pixel
+        if(topCenterPxAlpha == 0){ //If the top center pixel has no alpha (has a value of 0) then we can assume we need to run a "fit to height" on the newly added layer
             var fitHeightScale = (newComp.height*newComp.pixelAspect)/(imageLayer.height*imageLayer.source.pixelAspect)*100;
             imageLayer.property("Scale").setValue([fitHeightScale,fitHeightScale]);
         };
 
-        tempAdjustmentLayer.source.remove();
-        tempTextLayer.remove();
-
-            //alert(tempTextLayer.property("Source Text").value);
+        tempAdjustmentLayer.source.remove(); //removes the tempAdjustment layer from the project
+        tempTextLayer.remove(); //removes the tempText layer from the comp
     };
 
     app.endUndoGroup();
-    
+
+    for(var t = 1; t <= app.project.numItems; t++){ //deselects all of the selected footage items
+        app.project.item(t).selected = false;
+    };
+    photosToCompsFolder.selected = true; //selects the newly created folder to draw the user's eye to it
+
 };
 
 /////////////////////////////////////////////////////////////
 //////////// AWARDS SHOW MAKER FUNCTIONS    /////////////////
 /////////////////////////////////////////////////////////////
 
+//This function builds the review list, which the actual run function pulls from
 function asmReviewFcn(){
-    //alert(asmTemplateCompID + "\r" + asmPhotoLayerIndex + "\r" + asmNameLayerIndex + "\r"+ asmSubtitle1LayerIndex +"\r"+ asmSubtitle2LayerIndex);
 
-    if(reviewList){ //This checks to see if the reviewList exists yet, the first time the script runs it does not exist. If the list does exist, this will remove the old one to be replaced
+    if(reviewList){ //This checks to see if the reviewList exists yet, the first time the script runs it does not exist. If a list from a previous run does exist, this will remove the old one to be replaced
         reviewListGroup.remove(reviewList);
     };
 
-    //This whole section prepares variables to be used to create the review list
+    //This whole section prepares variables to be used to create the review list by re-asserting them or clearing the globals
     var numReviewColumns = 0;
     nameReviewCol = "None";
     sub1ReviewCol = "None";
@@ -964,9 +980,9 @@ function asmReviewFcn(){
     };
 
     reviewList = reviewListGroup.add("listbox", undefined, undefined, {name: "reviewListBox", numberOfColumns: numReviewColumns, columnTitles: reviewColumnTitles, showHeaders: true, multiselect:true});
-    reviewList.preferredSize.width = 800;
-    reviewList.preferredSize.height = 300;
+    reviewList.alignment=["fill","fill"]; //setting the list alignment to ["fill","fill"] makes it so it always fills the window on resize
     reviewListGroup.layout.layout(true); //This refreshes the reviewListGroup's layout, it's not necessary for the first run, but is needed to replace the review list with any changes made to it
+    reviewListGroup.layout.resize(); //Sizes the review list to fit in the window
 
     //Populate review list if a CSV is present, will add photo comps if applicable
     var csvChecker = false; //this checker is used while populating the list to determine if a CSV is in use or not
@@ -998,16 +1014,15 @@ function asmReviewFcn(){
 
         if(photoLayerCheckBox.value == true && (csvData.length-csvOffset) !== selectedPhotoCompsList.items.length){
             alert("The number of photo comps must match the number of entries in the CSV!\r\r"  + (csvData.length-csvOffset) + " Entries in CSV\r" + selectedPhotoCompsList.items.length + " Selected Photo Comps" + "\r\r*You may need to double check that your header row toggle is correct");
-            return false //This should be considered a bug, I can probably fix it by having multiple lists in the review page instead of only one with multiple columns.
+            return false //This could be considered a bug, I can probably fix it by having multiple lists in the review page instead of only one with multiple columns, but that creates additional issues so it is yet to be implemented
         };
 
-        for(var i = 0; i < (csvData.length-csvOffset); i++){ //Right now the CSV length drives the for loop duration
-        //-1 is added to the list length becuase technically the list starts at 0, not 1, which offsets the perceived length
+        for(var i = 0; i < (csvData.length-csvOffset); i++){ //The CSV length drives the for loop duration, hence the error check above, if the contents of one exceed the contents of the other the script will error out
             var csvRow = csvData[i+csvOffset].split(csvListSepEditText.text);
-            var itemsToAddToReview = [];
+            var itemsToAddToReview = []; //We're basically building an array that will then be plugged into the review list as a new item
 
             if(nameLayerCheckBox.value == true){
-                if(csvLastNameColCheckBox.value == true){
+                if(csvLastNameColCheckBox.value == true){ //If separate last name is checked, the two entries are combined with a space between as it enters the review list
                     itemsToAddToReview[itemsToAddToReview.length] = csvRow[csvNameColEditText.text] + " " + csvRow[csvLastNameColEditText.text];
                 }else{
                     itemsToAddToReview[itemsToAddToReview.length] = csvRow[csvNameColEditText.text];
@@ -1023,13 +1038,11 @@ function asmReviewFcn(){
                 itemsToAddToReview[itemsToAddToReview.length] = selectedPhotoCompsList.items[i].text;
                 itemsToAddToReview[itemsToAddToReview.length] = selectedPhotoCompsList.items[i].subItems[0];
             };
-
-            //alert(itemsToAddToReview);
             
             
-            var addToReviewList = reviewList.add("item",itemsToAddToReview[0]);
+            var addToReviewList = reviewList.add("item",itemsToAddToReview[0]); //Creates a new item in the reviewlist, then adds the first value of the array into the first column
             
-            for(var v = 1; v < numReviewColumns; v++){
+            for(var v = 1; v < numReviewColumns; v++){ //This for loop will sift through the remaining array values and insert them into the subsequent subitem/column
                 addToReviewList.subItems[v-1].text = itemsToAddToReview[v];
             };
             
@@ -1038,32 +1051,23 @@ function asmReviewFcn(){
 
     
 
-    //DUPLICATE PHOTO COMP LIST INTO REVIEW LIST IF APPLICABLE
+    //DUPLICATE PHOTO COMP LIST INTO REVIEW LIST IF NO CSV IS USED
     if(csvChecker == false){
         //To point to a listitem, you need to specify the list.items[0] which dictates the row (running .text on this will give the first column's result), then subsequent columns can be called with .subItems[X] with X starting at 0 to call column 2
         
-        for(var p = 0; p < selectedPhotoCompsList.items.length; p++){ 
+        for(var p = 0; p < selectedPhotoCompsList.items.length; p++){ //If no CSV is needed, this duplicates the contents of the selected photo comps list into the review list
             var photoCompNameToAdd = selectedPhotoCompsList.items[p].text;
             var addToReviewList = reviewList.add("item",photoCompNameToAdd);
 
             var photoCompIDToAdd = selectedPhotoCompsList.items[p].subItems[0];
             addToReviewList.subItems[0].text = photoCompIDToAdd;
         };
-        //alert(selectedPhotoCompsList.items.length);
-        //alert(selectedPhotoCompsList.items[0].text + "\r" + selectedPhotoCompsList.items[0].subItems[0].text);
-        
     };
 
 };
 
 function awsFunction(){
     app.beginUndoGroup("Awards Show Maker");
-
-    /*
-    alert("ERROR CHECKER" + "\r\rName col: " + nameReviewCol + "\rSub1 col: " + sub1ReviewCol + "\rSub2 col: " + sub2ReviewCol + "\rPhoto ID col: " + photoCompIDReviewCol + 
-            "\r\rTemplate Comp ID: " + asmTemplateCompID + "\rName Layer Index: " + asmNameLayerIndex + "\rSub1 Layer Index: " + asmSubtitle1LayerIndex +
-            "\rSub2 Layer Index: " + asmSubtitle2LayerIndex + "\rPhoto Layer Index: " + asmPhotoLayerIndex);
-    */
 
     //CONVERT TEMPLATE COMP ID TO INDEX
     var asmTemplateCompIndex;
@@ -1081,6 +1085,7 @@ function awsFunction(){
     awardShowMakerFolder.parentFolder = asmTemplateComp.parentFolder;
 
     for(var a = 0; a < reviewList.items.length; a++){
+
         var numIter; //This whole section makes it so the newly created comps sort correctly by adding a numeral to the start of the comp name
         if(a < 9){
             numIter = "0"+(a+1);
@@ -1094,39 +1099,39 @@ function awsFunction(){
         var subtitle2Insert = pullFromList(reviewList,sub2ReviewCol,a);
         var photoIDPull = pullFromList(reviewList,photoCompIDReviewCol,a);
 
-        var compName;
+        var compName; //This section specifies what the name of the new comp will be
         if(nameLayerCheckBox.value == false){
-            compName = numIter;            
+            compName = numIter; //If there isn't a name column from the CSV, the new comp will just be named with a number counter
         }else{
-            compName = numIter + " " + nameInsert;
-        }
-        //alert("Comp Name: " + compName + "\rName: " + nameInsert + "\rSub1: " + subtitle1Insert + "\rSub2: " + subtitle2Insert + "\rPhotoID: " + photoIDPull);
+            compName = numIter + " " + nameInsert; //If there IS a name from the CSV, that will be included in the name of the comp
+        };
     
         //DUPLICATE TEMPLATE COMP
         var dupTempComp = asmTemplateComp.duplicate();
         dupTempComp.name = compName;
         dupTempComp.parentFolder = awardShowMakerFolder;
         var dupCompID = dupTempComp.id;
+
         var dupCompIndex;
-        for(var i = 1; i <= app.project.numItems; i++){ //For loop needs to find the index of the new comp based on the comp's ID
+        for(var i = 1; i <= app.project.numItems; i++){ //For loop needs to find the index of the new comp based on the comp's ID, since you can't just have that apparently
             if(app.project.item(i).id == dupCompID){
                 dupCompIndex = i;
             };
         };
         
-        if(photoLayerCheckBox.value == true){
+        if(photoLayerCheckBox.value == true){ //Replaces photo source if applicable
             layerReplacer(dupCompIndex,asmPhotoLayerIndex,photoIDPull);
         };
 
-        if(nameLayerCheckBox.value == true){
+        if(nameLayerCheckBox.value == true){ //Replaces text in given layer if applicable
             textReplacer(dupCompIndex,asmNameLayerIndex,nameInsert);
         };
 
-        if(subtitle1LayerCheckBox.value == true){
+        if(subtitle1LayerCheckBox.value == true){ //Replaces text in given layer if applicable
             textReplacer(dupCompIndex,asmSubtitle1LayerIndex,subtitle1Insert);
         };
 
-        if(subtitle2LayerCheckBox.value == true){
+        if(subtitle2LayerCheckBox.value == true){ //Replaces text in given layer if applicable
             textReplacer(dupCompIndex,asmSubtitle2LayerIndex,subtitle2Insert);
         };
         
