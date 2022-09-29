@@ -70,6 +70,7 @@ The Photos to Comps tool includes two panels, the panel on the left is for input
 ![](https://i.imgur.com/nPlpEJ7.png)
 ### The Comp Settings Panel
 ![](https://i.imgur.com/0Mnxcgm.png)
+
 This panel is where you tell the tool the aspects of the comps you want your images to be inserted into. You should make these settings MATCH the settings of the embedded photo comp in your template.
 
  1. **Comp Width** - This is the width that the photo comps will be created at. It's recommended that this match the width of the photo comp in your template.
