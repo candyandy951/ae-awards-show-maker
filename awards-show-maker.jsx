@@ -8,9 +8,9 @@ Code for Import https://scriptui.joonas.me — (Triple click to select):
 var mainWindow = new Window("palette"); 
     mainWindow.text = "Awards Show Maker Menu"; 
     mainWindow.orientation = "column"; 
-    //mainWindow.alignChildren = ["center","top"]; 
     mainWindow.spacing = 10; 
     mainWindow.margins = 16; 
+    mainWindow.preferredSize = [200,100];
 
 // MAINBUTTONSGRP
 // ==============
@@ -88,6 +88,7 @@ var compWidthEditTextGlobalHolder = 720;
 var compWidthEditText = compWidthGroup.add('edittext'); 
     compWidthEditText.text = compWidthEditTextGlobalHolder; 
     compWidthEditText.preferredSize.width = 50; 
+    compWidthEditText.helpTip = "Width to create comps at in pixels";
     compWidthEditText.onChange = function() {
         var numErrorCheck = textBoxNumErrorChecker(compWidthEditText.text,"Comp Width");
         if(numErrorCheck == "notNum"){
@@ -113,6 +114,7 @@ var compHeightEditTextGlobalHolder = 1080;
 var compHeightEditText = compHeightGroup.add('edittext'); 
     compHeightEditText.text = compHeightEditTextGlobalHolder; 
     compHeightEditText.preferredSize.width = 50; 
+    compHeightEditText.helpTip = "Height to create comps at in pixels";
     compHeightEditText.onChange = function() {
         var numErrorCheck = textBoxNumErrorChecker(compHeightEditText.text,"Comp Height");
         if(numErrorCheck == "notNum"){
@@ -138,6 +140,7 @@ var compDurationEditTextGlobalHolder = 10;
 var compDurationEditText = compDurationGroup.add('edittext'); 
     compDurationEditText.text = compDurationEditTextGlobalHolder; 
     compDurationEditText.preferredSize.width = 50; 
+    compDurationEditText.helpTip = "Duration to set new comps to in seconds";
     compDurationEditText.onChange = function() {
         var numErrorCheck = textBoxNumErrorChecker(compDurationEditText.text,"Comp Duration");
         if(numErrorCheck == "notNum"){
@@ -164,6 +167,7 @@ var compFramerateEditTextGlobalHolder = 60;
 var compFramerateEditText = compFramerateGroup.add('edittext'); 
 compFramerateEditText.text = compFramerateEditTextGlobalHolder; 
 compFramerateEditText.preferredSize.width = 50; 
+compFramerateEditText.helpTip = "Frame rate to set created comps to";
 compFramerateEditText.onChange = function() {
     var numErrorCheck = textBoxNumErrorChecker(compFramerateEditText.text,"Comp Frame Rate");
     if(numErrorCheck == "notNum"){
@@ -189,6 +193,7 @@ var compPixelAspectEditTextGlobalHolder = 1;
 var compPixelAspectEditText = compPixelAspecteGroup.add('edittext'); 
 compPixelAspectEditText.text = compPixelAspectEditTextGlobalHolder; 
 compPixelAspectEditText.preferredSize.width = 50; 
+compPixelAspectEditText.helpTip = "Pixel aspect to set the created comps to";
 compPixelAspectEditText.onChange = function() {
     var numErrorCheck = textBoxNumErrorChecker(compPixelAspectEditText.text,"Comp Pixel Aspect");
     if(numErrorCheck == "notNum"){
@@ -234,12 +239,14 @@ var selDelGroup = listGroup.add("group", undefined, {name: "selDelGroup"});
 
 var selectPhotosBtn = selDelGroup.add("button", undefined, undefined, {name: "selectPhotosBtn"}); 
     selectPhotosBtn.text = "Select Photos"; 
+    selectPhotosBtn.helpTip = "Click to add all currently highlighted footage items in the project to the 'selected items' list above";
     selectPhotosBtn.onClick = function() {
         selectItemNameIDList("[object FootageItem]","FootageItem",selItemsList);
     };
 
 var removeSelectedPhotosButton = selDelGroup.add("button", undefined, undefined, {name: "removeSelectedPhotosButton"});
     removeSelectedPhotosButton.text = "Delete";
+    removeSelectedPhotosButton.helpTip = "Click to remove highlighted items from the 'Selected Items' list";
     removeSelectedPhotosButton.onClick = function(){deleteMultiSelectedListItems(selItemsList)};
 
 var createCompsButton = listGroup.add("button", undefined, undefined, {name: "createCompsButton"}); 
@@ -299,12 +306,14 @@ var selTemplateButton = templatePanel.add("group", undefined, {name: "selTemplat
 
 var templateSelBtn = selTemplateButton.add("button", undefined, undefined, {name: "templateSelBtn"}); 
     templateSelBtn.text = "Select Template"; 
+    templateSelBtn.helpTip = "Highlight the template comp in the project panel, then click this button to choose it.";
     templateSelBtn.onClick = function(){
         asmTemplateCompID = selectSingleProjectItem("[object CompItem]","Comp Item",templateCompSelEditText);
     };
 
 var templateCompSelEditText = selTemplateButton.add('edittext {properties: {name: "templateCompSelEditText", readonly: true}}'); 
     templateCompSelEditText.text = "No Comp Selected"; 
+    templateCompSelEditText.helpTip = "The name of the selected template comp will appear here";
     templateCompSelEditText.preferredSize.width = 200; 
 
 // PHOTO LAYER CHECKBOX
@@ -312,6 +321,7 @@ var templateCompSelEditText = selTemplateButton.add('edittext {properties: {name
 var photoLayerCheckBox = templatePanel.add("checkbox", undefined, undefined, {name: "photoLayerCheckBox"}); 
     photoLayerCheckBox.text = "Template Includes a Photo Layer"; 
     photoLayerCheckBox.value = true; 
+    photoLayerCheckBox.helpTip = "Check this box if the template comp includes a photo procomp layer";
     photoLayerCheckBox.onClick = function(){itemHideUnhider(photoLayerSelGroup);itemHideUnhider(photoCompsPanel);};
 
 // PHOTOLAYERSELGROUP
@@ -325,12 +335,14 @@ var photoLayerSelGroup = templatePanel.add("group", undefined, {name: "photoLaye
 var photoLayerSelButton = photoLayerSelGroup.add("button", undefined, undefined, {name: "photoLayerSelButton"}); 
     photoLayerSelButton.text = "Select Photo Layer"; 
     photoLayerSelButton.preferredSize.width = 140; 
+    photoLayerSelButton.helpTip = "Highlight the photo precomp layer within the template comp, then click this button to choose it";
     photoLayerSelButton.onClick = function(){
         asmPhotoLayerIndex = selectSingleCompLayer(asmTemplateCompID,"[object AVLayer]","AV (with a replaceable source)",photoLayerEditText);
     };
 
 var photoLayerEditText = photoLayerSelGroup.add('edittext {properties: {name: "photoLayerEditText", readonly: true}}'); 
     photoLayerEditText.text = "No Layer Selected"; 
+    photoLayerEditText.helpTip = "The layer index and name will appear here in the format: (Index) Name";
     photoLayerEditText.preferredSize.width = 182; 
 
 // NAME LAYER CHECKBOX
@@ -338,6 +350,7 @@ var photoLayerEditText = photoLayerSelGroup.add('edittext {properties: {name: "p
 var nameLayerCheckBox = templatePanel.add("checkbox", undefined, undefined, {name: "nameLayerCheckBox"}); 
     nameLayerCheckBox.text = "Template Includes a \u0022Name\u0022 Text Layer"; 
     nameLayerCheckBox.value = true; 
+    nameLayerCheckBox.helpTip = "Check this box if the template comp includes a name text layer";
     nameLayerCheckBox.onClick = function(){
         itemHideUnhider(nameLayerSelGroup);
         itemHideUnhider(csvNameColGroup);
@@ -355,12 +368,14 @@ var nameLayerSelGroup = templatePanel.add("group", undefined, {name: "nameLayerS
 var nameLayerSelButton = nameLayerSelGroup.add("button", undefined, undefined, {name: "nameLayerSelButton"}); 
     nameLayerSelButton.text = "Select Name Layer"; 
     nameLayerSelButton.preferredSize.width = 140; 
+    nameLayerSelButton.helpTip = "Highlight the name text layer within the template comp, then click this button to choose it";
     nameLayerSelButton.onClick = function(){
         asmNameLayerIndex = selectSingleCompLayer(asmTemplateCompID,"[object TextLayer]","Text",nameLayerEditText);
     };
 
 var nameLayerEditText = nameLayerSelGroup.add('edittext {properties: {name: "nameLayerEditText", readonly: true}}'); 
     nameLayerEditText.text = "No Layer Selected"; 
+    nameLayerEditText.helpTip = "The name layer index and name will appear here in the format: (Index) Name";
     nameLayerEditText.preferredSize.width = 182; 
 
 // SUBTITLE1 LAYER CHECKBOX
@@ -368,6 +383,7 @@ var nameLayerEditText = nameLayerSelGroup.add('edittext {properties: {name: "nam
 var subtitle1LayerCheckBox = templatePanel.add("checkbox", undefined, undefined, {name: "subtitle1LayerCheckBox"}); 
     subtitle1LayerCheckBox.text = "Template Includes a \u0022Subtitle\u0022 Text Layer"; 
     subtitle1LayerCheckBox.value = true; 
+    subtitle1LayerCheckBox.helpTip = "Check this box if the template comp includes a subtitle text layer"
     subtitle1LayerCheckBox.onClick = function(){
         itemHideUnhider(subtitle1LayerSelGroup);
         itemHideUnhider(csvSubtitle1ColGroup);
@@ -668,7 +684,7 @@ helpReturnToMenuButton.alignment = ["left","top"];
 var helpText1 = helpWindow.add("statictext",undefined,undefined,{name: "helpText1"});
 helpText1.text = "For help, please visit the GitHub page for this script at:"
 
-var helpURL = "https://github.com/candyandy951/"
+var helpURL = "https://github.com/candyandy951/ae-awards-show-maker"
 var helpEditText2 = helpWindow.add("edittext",undefined,helpURL,{readonly:true});
 helpEditText2.preferredSize.width = 300;
 
