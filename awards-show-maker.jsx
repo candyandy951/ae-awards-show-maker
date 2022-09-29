@@ -143,7 +143,10 @@ var compDurationEditText = compDurationGroup.add('edittext');
     compDurationEditText.helpTip = "Duration to set new comps to in seconds";
     compDurationEditText.onChange = function() {
         var numErrorCheck = textBoxNumErrorChecker(compDurationEditText.text,"Comp Duration");
-        if(numErrorCheck == "notNum"){
+        if(numErrorCheck == 0){
+            alert("Comp Duration cannot be zero!");
+            compDurationEditText.text = compDurationEditTextGlobalHolder;
+        }else if(numErrorCheck == "notNum"){
             compDurationEditText.text = compDurationEditTextGlobalHolder;
         }else{
             compDurationEditTextGlobalHolder = numErrorCheck;
