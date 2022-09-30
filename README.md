@@ -7,6 +7,18 @@ If you enjoy this script and it has helped you save time on your projects, consi
 
 # Index
 
+ - [Overview](https://github.com/candyandy951/ae-awards-show-maker#overview)
+	 - [How it Works](https://github.com/candyandy951/ae-awards-show-maker#how-it-works)
+	 - [Additional Details](https://github.com/candyandy951/ae-awards-show-maker#additional-details)
+ - [Installation](https://github.com/candyandy951/ae-awards-show-maker#installation)
+ - [How to Use](https://github.com/candyandy951/ae-awards-show-maker#how-to-use)
+	 - [Step 1: Prep your Assets](https://github.com/candyandy951/ae-awards-show-maker#step-1-prep-your-assets)
+	 - [Step 2: Create Your Template](https://github.com/candyandy951/ae-awards-show-maker#step-2-create-your-template)
+	 - [Step 3: Convert Your Photos to Comps](https://github.com/candyandy951/ae-awards-show-maker#step-3-convert-your-photos-to-comps)
+	 - [Step 4: The Award Show Maker Tool](https://github.com/candyandy951/ae-awards-show-maker#step-4-the-award-show-maker-tool)
+	 - [Step 5: Assemble your "Master Comp"](https://github.com/candyandy951/ae-awards-show-maker#step-5-assemble-your-master-comp)
+ - [Appendix](https://github.com/candyandy951/ae-awards-show-maker#appendix)
+	 - [Changing the Character Used as List Separator in Excel on Windows 10](https://github.com/candyandy951/ae-awards-show-maker#changing-the-character-used-as-list-separator-in-excel-on-windows-10)
 
 # Overview
 ## How it Works:
@@ -39,13 +51,13 @@ The **Awards Show Maker** tool is the advertised portion of the script, it takes
 -   OR copy the script file into your After Effects scripts folder to quick select it from the File>Scripts menu.
 
 # How to Use:
-## Step 0: Prep your Assets
+## Step 1: Prep your Assets
 This script is all about combining all of your assets together into one coherent awards show slideshow by generating each of your "slides" and injecting the appropriate assets into those slides.
 Assets you may have that this script will help you with are:
 **Photos** - Perhaps you have a collection of headshots for each awardee that need to be displayed on a slide as their name is read out.
 **Names, Subtitles, or other text** - Awardee names and subtitles are most common here, but really these can really be anything that needs to be displayed on the award slides. Your text based assets should be collected in a spreadsheet that can be converted into a CSV, since that's how the script will be reading your text assets. Each row of the CSV should include the text data for each award "slide," so make sure to arrange your CSV in columns. For example, a column of names, a column of subtitles, etc.
 *NOTE: As mentioned above, you need to keep the text content in mind when generating your CSV, if your text content includes commas, you will need to export or create your CSV with a separator other than a comma!
-## Step 1: Create Your Template
+## Step 2: Create Your Template
 Before using this script, you first need to create a template "slide" for your awards show. This template can include up to:
 
  - 1 Photo (As a Nested Comp)
@@ -58,7 +70,7 @@ Before using this script, you first need to create a template "slide" for your a
 You are able to mix and match any of the above, a template can be made with no photo and two text layers, or can just be a photo with no text layers.
 Your template can include any variety of animation you wish so long as your photo remains as a nested comp and your text layers remain text layers (no converting text to shapes). I recommend having a template that has the assets animate in, then animate out.
 You may want to create a background for your template as well, I recommend doing this in a separate comp and only having your template comp include the animation for the photo and text fields. This way, after you create your award show "slides" you can drop them all into a MASTER COMP and then lay the background comp behind them.
-## Step 2: Convert Your Photos to Comps
+## Step 3: Convert Your Photos to Comps
 If you have photos that need to be used in your awards show "slides," all of those photos need to be inserted into comps. The Photos to Comps tool is built to automate this process for you.
 
 First, import your photo assets into the After Effects project.
@@ -87,7 +99,7 @@ This panel on the right side of the window is where you select your photo footag
  4. **Create Comps from Photos! Button** - This button will execute the Photos to Comps process using the comp information you input on the left and the footage items in the Selected Items List.
 
 ### Running the Photos to Comps Tool
-When the Photos to Comps process runs, it will create a new folder with your footage items, then for EACH footage item in the Selected Items List it will:
+When the Photos to Comps process runs, it will create a new folder next to your footage items with the name "Photos to Comps [# of times you've run the script]", then for EACH footage item in the Selected Items List it will:
 
  - Create a new comp using the settings you specified in the Comp Settings Panel
  - Add the footage item to that comp
@@ -99,7 +111,7 @@ After running the tool, it is recommended that you open and check each comp it c
 NOTE: If your awards show will include text content, it is IMPERITIVE that when your photo comps sort alphabetically, they match the order of the text data in your CSV. It is recommended that you rename the source footage files ahead of time so they sort in the correct order as the photo comps created by the Photos to Comps tool adopt the same names as the footage they contain.
 (technically speaking, this is more of a bug/fault in the script in the way that it pulls your selections from the project panel and how it is not intelligent in matching the resulting photo comps with the CSV data. I may implement a fix for this in the future... but for now you need to make sure your photos and photo comps sort in your desired order.)
 
-## Step 3: The Award Show Maker Tool:
+## Step 4: The Award Show Maker Tool:
 Return to the script's main menu, then select the "Awards Show Maker" button to open the Awards Show Maker tool.
 ![](https://i.imgur.com/FYYGyV4.png)
 The Awards Show Maker tool window is dynamic, when you check certain boxes, other items in the window may appear or vanish.
@@ -144,4 +156,41 @@ This window opens when you click the "REVIEW" button in the Award Show Maker Too
 ![](https://i.imgur.com/2s3ejpR.png)
 
  1. **Return to Awards Show Maker Window** - Clicking this button will bring you back to the Awards Show Maker window. Be sure to use this button to return to the previous window as Xing out this window will close the entire script and you'll need to re-enter your data again.
+ 2. **Review List** - This is where the script will assemble all the data from your CSV and your photo comps. You should take some time to browse through this list to make sure each row has all of the data correct, that the script successfully pulled the text from your CSV and that it has associated the correct photo comp with that CSV (remember, it's up to YOU to make sure the photo comps are in the correct order alphabetically to match your CSV data). Each row in this list will be a new "slide" so make sure you check this for errors so you aren't going back after the fact to figure out what happened if something went wrong.
+ 3. **CONFIRM & RUN Button** - This button runs the Award Show Maker script and turns all of the data in the review box into new "slide" comps.
+
+### Running the Awards Show Maker Script
+When you click the "CONFIRM & RUN" button in the review window the script will create a new folder named "Award Show Maker [# of times you've run the script]" in the same location as your Template Comp to house all of the "slide" comps that it is about to make, then it will do the following for every entry in the Review List:
+
+ 1. Make a duplicate of your Template Comp and place it in the newly created folder.
+ 2. Replace the source of the photo layer with the new Photo Comp associated with the "slide" (if you checked the "Photo Layer" checkbox).
+    - The name of the associated photo comp was shown in the Review Window if applicable.
+ 3. Replace the source text in the "Name" text layer with the associated data from the CSV (if you checked the "Name Layer" checkbox).
+	 - the "Name" text was shown in the Review Window if applicable.
+ 4. Replace the source text in the "Subtitle 1" text layer with the associated data from the CSV (if you checked the "Subtitle Layer" checkbox).
+	 - The "Subtitle 1" text was shown in the Review Window if applicable.
+5. Replace the source text in the "Subtitle 2" text layer with the associated data from the CSV (if you checked the "second Subtitle" checkbox).
+	- The "Subtitle 2" text was shown in the Review Window if applicable.
+
+## Step 5: Assemble your "Master Comp"
+Now that you have all of your individual "slide" comps, you should arrange them into one clean "Master Comp" so they can be rendered as one coherent video. Currently this script does not have functionality to do this for you (but it may eventually), so I'll outline my usual next-steps below:
+
+ 1. Create a new "Master Comp" - it'll likely have the same specs as your Template Comp, but will be long enough to fit the combined durations of each of your newly created "slide" comps.
+ 2. Add all of your newly created "slide" comps to the Master Comp.
+ 3. Select all of the "slide" comps, right click, then navigate to "Keyframe Assistant>Sequence Layers...":
+![](https://i.imgur.com/EFaL3Vf.png)
+4. Make sure the "Overlap" box is unchecked (unless you want that) then click "OK". This will sequence all of your awards "slides" so they play one after the other. This works best if you've created your Template Comp with an animate in from and animate out to a blank screen.
+	- NOTE: The Sequence Layers tool DOES care about the order you selected your layers in when butting them against one another in the timeline. If your layers sequence in the incorrect order, reselect them in the opposite order and try again.
+5. Now add a nice background behind all of your "slides" and render!
+
+# Appendix
+## Changing the Character Used as List Separator in Excel on Windows 10
+Below are the steps to take to change what character is used as the list separator when exporting a CSV from Excel on Windows 10. I don't currently know of any other solutions to export a CSV with a list separator other than a comma, if you do know I'm hungry for the knowledge.
+
+Excel uses the settings in Windows to determine what your list separator should be in a CSV, by default (in North America at least) is to use a comma (,). To change this default:
+- Open the Windows Control Panel
+- Navigate to "Region"
+- Click "Additional Settings"
+In this Additional Settings window, there should be a box for "List Separator". For use with this script, change this to a character that does NOT appear in your spreadsheet data AT ALL. Click "Apply". Now when you File>Export>CSV from Excel, it should use the list separator you specified in the Windows settings.
+![](https://i.imgur.com/qbJeMCI.png)
 
