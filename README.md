@@ -18,6 +18,7 @@ If you enjoy this script and it has helped you save time on your projects, consi
 	 - [Step 4: The Award Show Maker Tool](https://github.com/candyandy951/ae-awards-show-maker#step-4-the-award-show-maker-tool)
 	 - [Step 5: Assemble your "Master Comp"](https://github.com/candyandy951/ae-awards-show-maker#step-5-assemble-your-master-comp)
  - [Appendix](https://github.com/candyandy951/ae-awards-show-maker#appendix)
+ 	 - [Release Notes](https://github.com/candyandy951/ae-awards-show-maker#release-notes)
 	 - [Changing the Character Used as List Separator in Excel on Windows 10](https://github.com/candyandy951/ae-awards-show-maker#changing-the-character-used-as-list-separator-in-excel-on-windows-10)
 
 # Overview
