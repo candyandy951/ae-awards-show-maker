@@ -22,7 +22,7 @@ If you enjoy this script and it has helped you save time on your projects, consi
 
 # Overview
 ## How it Works:
-This script is specifically designed for **After Effects**, there's no telling what horrors lie ahead for you if you attempt to run this script in a different application (aside from it generally just not working of course).
+This script is specifically designed for **After Effects**, there's no telling what horrors lie ahead for you if you attempt to run it in a different application (aside from it generally just not working of course).
 
 As described above, this script is meant to help automate the process of creating an "awards show" style slideshow inside of After Effects. The script expects the user to design their own template slide with whatever animations or assets they deem necessary. Then when the user runs the script, it will duplicate that template comp and update the photo and/or text within to match the awards show data the user provides.
 
@@ -31,13 +31,13 @@ When designing the template comp for use with this script, the user should keep 
  1. If a photo is used in the template (a headshot for example), it MUST be added as a precomp.
 	 - The script expects you to have photos of various resolutions throughout the "slideshow." By precomping all of the photos, you standardize the resolution of the photo layer and make it easy for the script to reliably replace.
 2. Any text included in the template must be a text layer within the template comp. Effects, masks, track matts, etc. can be added, but you cannot do things that alter the layer's classification as a "text layer" like have the text nested in a precomp or convert the text to shapes.
-3. The script currently only supports the automation of replacing 3 text fields/layers - typically a name and two subtitles. Any additional text fields would need to be edited after the script generates the slideshow.
+3. The script currently only supports the automation of replacing 3 text fields/layers - typically a name and two subtitles. Any additional text fields would need to be edited after the script generates the "slides".
 
 This script is broken into two separate tools: the **Photos to Comps** tool, and the **Awards Show Maker** tool.
 
-The **Photos to Comps** tool aids the user in generating precomps from photos to use in the slideshow. This tool is here because if a photo is used in the template comp, it must be a precomp, otherwise you're asking for trouble when dealing with photos of varying resolution.
+The **Photos to Comps** tool aids the user in generating precomps from photos to use in the slideshow. This tool is here because if a photo is used in the template comp, it must be a precomp, otherwise you're asking for trouble when dealing with photos of varying resolution (plus the rest of the script won't work).
 
-The **Awards Show Maker** tool is the advertised portion of the script, it takes the template comp along with the photo comps (easily generated using the photos to comps tool) and a CSV of text data (if applicable) and combines them to create multiple duplicates of the template comp with updated photos and/or text fields.
+The **Awards Show Maker** tool is the advertised portion of the script, it takes the template comp along with the photo comps (if applicable) and a CSV of text data (if applicable) and combines them to create multiple duplicates of the template comp with updated photos and/or text fields.
 
 ## Additional Details:
 
@@ -55,20 +55,22 @@ The **Awards Show Maker** tool is the advertised portion of the script, it takes
 This script is all about combining all of your assets together into one coherent awards show slideshow by generating each of your "slides" and injecting the appropriate assets into those slides.
 Assets you may have that this script will help you with are:
 **Photos** - Perhaps you have a collection of headshots for each awardee that need to be displayed on a slide as their name is read out.
-**Names, Subtitles, or other text** - Awardee names and subtitles are most common here, but really these can really be anything that needs to be displayed on the award slides. Your text based assets should be collected in a spreadsheet that can be converted into a CSV, since that's how the script will be reading your text assets. Each row of the CSV should include the text data for each award "slide," so make sure to arrange your CSV in columns. For example, a column of names, a column of subtitles, etc.
-*NOTE: As mentioned above, you need to keep the text content in mind when generating your CSV, if your text content includes commas, you will need to export or create your CSV with a separator other than a comma!
+**Names, Subtitles, or other text** - Awardee names and subtitles are most common here, but really these can be anything that needs to be displayed on the award slides. Your text based assets should be collected in a spreadsheet that can be converted into a CSV, since that's how the script will be reading your text assets. Each row of the CSV should include the text data for each award "slide," so make sure to arrange your CSV in columns. For example, a column of names, a column of subtitles, etc.
+**NOTE: As mentioned above, you need to keep the text content in mind when generating your CSV, if your text content includes commas, you will need to export or create your CSV with a list separator other than a comma!*
+
+**IMPORTANT** - If you have both photos and a CSV, it is critical that when sorted alphabetically your photos are in the same order as your CSV. If they do not, you should add a digit or some ordering character to the start of the filename to force the sort order to match your CSV. This is critical for step 4 to work without issues.
 ## Step 2: Create Your Template
 Before using this script, you first need to create a template "slide" for your awards show. This template can include up to:
 
- - 1 Photo (As a Nested Comp)
+ - One (1) Photo (As a Nested Comp)
 	 - It is recommended that your nested photo comp contain be some sort of generic placeholder image - perhaps something like a thematically appropriate silhouette if your photos will be headshots. This generic photo comp may come in handy later if you do not have a photo for a given awardee and need to use a placeholder.
- - 3 Text Layers/Fields. Typical text fields include:
+ - Three (3) Text Layers/Fields. Typical text fields often include:
    - One Name
    - First Subtitle
    - Second Subtitle
   
 You are able to mix and match any of the above, a template can be made with no photo and two text layers, or can just be a photo with no text layers.
-Your template can include any variety of animation you wish so long as your photo remains as a nested comp and your text layers remain text layers (no converting text to shapes). I recommend having a template that has the assets animate in, then animate out.
+Your template can include any variety of animation you wish so long as your photo remains as a nested comp and your text layers remain text layers (no converting text to shapes). I recommend having a template that has the assets animate in, then animate out (more on this in step 5).
 You may want to create a background for your template as well, I recommend doing this in a separate comp and only having your template comp include the animation for the photo and text fields. This way, after you create your award show "slides" you can drop them all into a MASTER COMP and then lay the background comp behind them.
 ## Step 3: Convert Your Photos to Comps
 If you have photos that need to be used in your awards show "slides," all of those photos need to be inserted into comps. The Photos to Comps tool is built to automate this process for you.
@@ -83,7 +85,7 @@ The Photos to Comps tool includes two panels, the panel on the left is for input
 ### The Comp Settings Panel
 ![](https://i.imgur.com/0Mnxcgm.png)
 
-This panel is where you tell the tool the aspects of the comps you want your images to be inserted into. You should make these settings MATCH the settings of the embedded photo comp in your template.
+This panel is where you tell the tool the aspects of the comps you want your images to be inserted into. You should make these settings MATCH the settings of the placeholder photo comp in your template.
 
  1. **Comp Width** - This is the width that the photo comps will be created at. It's recommended that this match the width of the photo comp in your template.
  2. **Comp Height** - This is the height that the photo comps will be created at. It's recommended that this match the height of the photo comp in your template.
@@ -93,7 +95,7 @@ This panel is where you tell the tool the aspects of the comps you want your ima
 ### The Item Selection List Panel
 ![](https://i.imgur.com/mvnEpu4.png)
 This panel on the right side of the window is where you select your photo footage items to turn into comps.
- 1. **Selected Items List** - This area is where the footage items that you select will appear for you to review. The first column will display the name of the footage item and the second column will display the ID number of the footage item. The ID number is a unique number that is assigned to each project item in After Effects and is what the script uses to reference your selected items
+ 1. **Selected Items List** - This area is where the footage items that you select will appear for you to review. The first column will display the name of the footage item and the second column will display the ID number of the footage item. The ID number is a unique number that is assigned to each project item in After Effects and is what the script uses to reference your selected items. The ID number isn't really something you as a user need to worry about - aside from looking at and saying "neat!" because now you know those footage items' IDs.
  2. **Select Photos Button** - Clicking this button after selecting/highlighting the photo footage items in your project panel will pull those items into the Selected Items List for you to review. This button will REFRESH your selected items list every time you click it to select items, it does not act as an "add" button.
  3. **Delete Button** - If you accidentally add an item that you do not wish to create a comp out of, you can select it in the Selected Items List and click this delete button to remove it from the list.
  4. **Create Comps from Photos! Button** - This button will execute the Photos to Comps process using the comp information you input on the left and the footage items in the Selected Items List.
@@ -107,14 +109,15 @@ When the Photos to Comps process runs, it will create a new folder next to your 
  - Puts the comp in the newly created folder next to the footage items
 
 After running the tool, it is recommended that you open and check each comp it created to make sure the photos are placed in an aesthetically pleasing way within their new comps. This script is not smart enough to do any sort of face detection when resizing the images to fit , so you will likely need to reposition some photos.
+*Hint: you can open multiple comps at once by selecting/highlighting them in the project panel and hitting the num pad enter key on your keyboard.*
 
-NOTE: If your awards show will include text content, it is IMPERITIVE that when your photo comps sort alphabetically, they match the order of the text data in your CSV. It is recommended that you rename the source footage files ahead of time so they sort in the correct order as the photo comps created by the Photos to Comps tool adopt the same names as the footage they contain.
+NOTE: If your awards show will include text content, it is IMPERITIVE that when your photo comps sort alphabetically, they match the order of the text data in your CSV. It is recommended that you rename the source footage files ahead of time so they sort in the correct order since the photo comps created by the Photos to Comps tool adopt the same names as the footage they contain.
 (technically speaking, this is more of a bug/fault in the script in the way that it pulls your selections from the project panel and how it is not intelligent in matching the resulting photo comps with the CSV data. I may implement a fix for this in the future... but for now you need to make sure your photos and photo comps sort in your desired order.)
 
 ## Step 4: The Award Show Maker Tool:
 Return to the script's main menu, then select the "Awards Show Maker" button to open the Awards Show Maker tool.
 ![](https://i.imgur.com/FYYGyV4.png)
-The Awards Show Maker tool window is dynamic, when you check certain boxes, other items in the window may appear or vanish.
+The Awards Show Maker window is dynamic, when you check certain boxes, other items in the window may appear or vanish.
 ### The Template Input Panel
 The template input panel is where you tell the script which comp in the project is your template comp and what layers in it are relevant.
 ![](https://i.imgur.com/HMcJ8mW.png)
@@ -133,7 +136,7 @@ The template input panel is where you tell the script which comp in the project 
 The text-based components of this script are driven by CSV data which you will need to prepare ahead of time. This panel is where you tell the script how to read the CSV file and which parts of your CSV to read for which things.
 ![](https://i.imgur.com/o6MqGqh.png)
  10. **Choose CSV File Button** - Clicking this button will open a File Explorer/Finder window for you to browse for and select your CSV file.
- 11. **Character Used in CSV as List Separator** - This box is where you specify what character your CSV uses as a list separator. By default, spreadsheet applications will export CSV files with commas as the list separator. However, this script is not smart, and as such if your CSV cell content includes commas and it also uses commas as the list separator that will confuse the script and cause unwanted behavior. If your text content includes commas, you will need to export/create a CSV that uses a different character as a list separator, I usually use pipes | when commas are not an option.
+ 11. **Character Used in CSV as List Separator** - This box is where you specify what character your CSV uses as a list separator. By default, spreadsheet applications will export CSV files with commas as the list separator. However, this script is not smart, and as such if your CSV cell content includes commas and it also uses commas as the list separator that will confuse the script and cause unwanted behavior. If your text content includes commas, you will need to export/create a CSV that uses a different character as a list separator, I usually use pipes | when commas are not an option. See the Appendix of this ReadMe for more information about this.
  12. **Does the CSV have a Header Row? Checkbox** - Header rows are often useful for the user when creating spreadsheets so you know what information is in each column, they're typically the very first row in a spreadsheet. Normally, if you were to import a CSV into After Effects, it assumes that the first row is a header row and ignores it completely. This script does NOT do that and relies on the user to tell it whether or not it should ignore the first row. With this box checked, it will ignore the first row, if not it will assume the first row has data you want to be included in the first slide.
  13. **Column in CSV with Names** - This box will appear if you have toggled the "Name Text Layer Checkbox". This box is where you specify which column in your CSV contains the text data that you want to be inserted into the layer you selected with the "Select Name Layer" button.
 	 - REMEMBER: CSV's start counting at ZERO, so your first column is actually column 0, not column 1.
@@ -163,17 +166,17 @@ This window opens when you click the "REVIEW" button in the Award Show Maker Too
 When you click the "CONFIRM & RUN" button in the review window the script will create a new folder named "Award Show Maker [# of times you've run the script]" in the same location as your Template Comp to house all of the "slide" comps that it is about to make, then it will do the following for every entry in the Review List:
 
  1. Make a duplicate of your Template Comp and place it in the newly created folder.
- 2. Replace the source of the photo layer with the new Photo Comp associated with the "slide" (if you checked the "Photo Layer" checkbox).
+ 2. Replace the source of the photo layer in the duplicate comp with the new Photo Comp associated with the "slide" (if you checked the "Photo Layer" checkbox).
     - The name of the associated photo comp was shown in the Review Window if applicable.
- 3. Replace the source text in the "Name" text layer with the associated data from the CSV (if you checked the "Name Layer" checkbox).
+ 3. Replace the source text in the "Name" text layer of the duplicate comp with the associated data from the CSV (if you checked the "Name Layer" checkbox).
 	 - the "Name" text was shown in the Review Window if applicable.
- 4. Replace the source text in the "Subtitle 1" text layer with the associated data from the CSV (if you checked the "Subtitle Layer" checkbox).
+ 4. Replace the source text in the "Subtitle 1" text layer of the duplicate comp with the associated data from the CSV (if you checked the "Subtitle Layer" checkbox).
 	 - The "Subtitle 1" text was shown in the Review Window if applicable.
-5. Replace the source text in the "Subtitle 2" text layer with the associated data from the CSV (if you checked the "second Subtitle" checkbox).
+5. Replace the source text in the "Subtitle 2" text layer of the duplicate comp with the associated data from the CSV (if you checked the "second Subtitle" checkbox).
 	- The "Subtitle 2" text was shown in the Review Window if applicable.
 
 ## Step 5: Assemble your "Master Comp"
-Now that you have all of your individual "slide" comps, you should arrange them into one clean "Master Comp" so they can be rendered as one coherent video. Currently this script does not have functionality to do this for you (but it may eventually), so I'll outline my usual next-steps below:
+Now that you have all of your individual "slide" comps, you should arrange them into one clean "Master Comp" so they can be rendered as one coherent video. Currently this script does not have functionality to do this for you (maybe it will eventually), so I'll outline my usual next-steps below:
 
  1. Create a new "Master Comp" - it'll likely have the same specs as your Template Comp, but will be long enough to fit the combined durations of each of your newly created "slide" comps.
  2. Add all of your newly created "slide" comps to the Master Comp.
@@ -192,5 +195,5 @@ Excel uses the settings in Windows to determine what your list separator should 
 - Navigate to "Region"
 - Click "Additional Settings"
 In this Additional Settings window, there should be a box for "List Separator". For use with this script, change this to a character that does NOT appear in your spreadsheet data AT ALL. Click "Apply". Now when you File>Export>CSV from Excel, it should use the list separator you specified in the Windows settings.
-![](https://i.imgur.com/qbJeMCI.png)
+![enter image description here](https://i.imgur.com/qbJeMCI.png)
 
