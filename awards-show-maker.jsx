@@ -403,6 +403,7 @@ var subtitle1LayerSelGroup = templatePanel.add("group", undefined, {name: "subti
 var subtitle1LayerSelButton = subtitle1LayerSelGroup.add("button", undefined, undefined, {name: "subtitle1LayerSelButton"}); 
     subtitle1LayerSelButton.text = "Select Subtitle 1 Layer"; 
     subtitle1LayerSelButton.preferredSize.width = 140;
+    subtitle1LayerSelButton.helpTip = "Highlight the subtitle text layer within the template comp, then click this button to choose it";
     subtitle1LayerSelButton.onClick = function(){
         asmSubtitle1LayerIndex = selectSingleCompLayer(asmTemplateCompID,"[object TextLayer]","Text",subtitle1EditText);
     };
@@ -410,12 +411,14 @@ var subtitle1LayerSelButton = subtitle1LayerSelGroup.add("button", undefined, un
 var subtitle1EditText = subtitle1LayerSelGroup.add('edittext {properties: {name: "subtitle1EditText", readonly: true}}'); 
     subtitle1EditText.text = "No Layer Selected"; 
     subtitle1EditText.preferredSize.width = 164; 
+    subtitle1EditText.helpTip = "The subtitle layer index and name will appear here in the format: (Index) Name";
 
 // SUBTITLE2 LAYER CHECKBOX
 // =============
 var subtitle2LayerCheckBox = templatePanel.add("checkbox", undefined, undefined, {name: "subtitle2LayerCheckBox"}); 
     subtitle2LayerCheckBox.text = "Template Includes a second \u0022Subtitle\u0022 Text Layer"; 
     subtitle2LayerCheckBox.value = false;
+    subtitle2LayerCheckBox.helpTip = "Check this box if the template comp includes a second subtitle text layer"
     subtitle2LayerCheckBox.onClick = function(){
         itemHideUnhider(subtitle2LayerSelGroup);
         itemHideUnhider(csvSubtitle2ColGroup);
@@ -432,6 +435,7 @@ var subtitle2LayerSelGroup = templatePanel.add("group", undefined, {name: "subti
 var subtitle2LayerSelButton = subtitle2LayerSelGroup.add("button", undefined, undefined, {name: "subtitle2LayerSelButton"}); 
     subtitle2LayerSelButton.text = "Select Subtitle 2 Layer"; 
     subtitle2LayerSelButton.preferredSize.width = 140;
+    subtitle2LayerSelButton.helpTip = "Highlight the second subtitle text layer within the template comp, then click this button to choose it";
     subtitle2LayerSelButton.onClick = function(){
         asmSubtitle2LayerIndex = selectSingleCompLayer(asmTemplateCompID,"[object TextLayer]","Text",subtitle2EditText);
     };
@@ -439,6 +443,7 @@ var subtitle2LayerSelButton = subtitle2LayerSelGroup.add("button", undefined, un
 var subtitle2EditText = subtitle2LayerSelGroup.add('edittext {properties: {name: "subtitle2EditText", readonly: true}}'); 
     subtitle2EditText.text = "No Layer Selected"; 
     subtitle2EditText.preferredSize.width = 164; 
+    subtitle2EditText.helpTip = "The second subtitle layer index and name will appear here in the format: (Index) Name";
 
     subtitle2LayerSelGroup.hide()
 
@@ -462,6 +467,7 @@ var csvSelGroup = csvPanel.add("group", undefined, {name: "csvSelGroup"});
 
 var csvBrowseButton = csvSelGroup.add("button", undefined, undefined, {name: "csvBrowseButton"}); 
     csvBrowseButton.text = "Choose CSV File..."; 
+    csvBrowseButton.helpTip = "Click this button to open an explorer/finder window to select your CSV file";
     csvBrowseButton.onClick = function(){
         filePathBrowse("Select your CSV file","Acceptable Files:*.csv,*.txt",false,asmCSVFilePath,csvFilePathEdittext);
     };
@@ -469,6 +475,7 @@ var csvBrowseButton = csvSelGroup.add("button", undefined, undefined, {name: "cs
 var csvFilePathEdittext = csvSelGroup.add('edittext {properties: {name: "edittext1", readonly: true}}'); 
     csvFilePathEdittext.text = "No CSV Selected"; 
     csvFilePathEdittext.preferredSize.width = 250; 
+    csvFilePathEdittext.helpTip = "The filepath of your CSV file will appear here after selecting";
 
 // CSVLISTSEPGROUP
 // ===============
@@ -484,12 +491,14 @@ var csvListSepStaticText = csvListSepGroup.add("statictext", undefined, undefine
 var csvListSepEditText = csvListSepGroup.add('edittext {properties: {name: "csvListSepEditText"}}'); 
     csvListSepEditText.text = ","; 
     csvListSepEditText.preferredSize.width = 40; 
+    csvListSepEditText.helpTip = "Input the character used to separate the list elements in your CSV here";
 
 // CSV HEADER ROW CHECKBOX
 // ========
 var csvHeaderRowCheckbox = csvPanel.add("checkbox", undefined, undefined, {name: "csvHeaderRowCheckbox"}); 
     csvHeaderRowCheckbox.text = "Does the CSV have a Header Row?"; 
     csvHeaderRowCheckbox.value = true; 
+    csvHeaderRowCheckbox.helpTip = "Checking this will make the script ignore the very first row of your CSV - useful if that row is a header row";
 
 // CSVNAMEGROUP
 // ============
@@ -502,9 +511,20 @@ var csvNameColGroup = csvPanel.add("group", undefined, {name: "csvNameColGroup"}
 var csvNameColStaticText = csvNameColGroup.add("statictext", undefined, undefined, {name: "csvNameColStaticText"}); 
     csvNameColStaticText.text = "Column in CSV with Names:"; 
 
+var csvNameColEditTextGlobalHolder = "0";    
 var csvNameColEditText = csvNameColGroup.add('edittext {properties: {name: "csvNameColEditText"}}'); 
-    csvNameColEditText.text = "0"; 
+    csvNameColEditText.text = csvNameColEditTextGlobalHolder; 
     csvNameColEditText.preferredSize.width = 40; 
+    csvNameColEditText.helpTip = "Put the column number containing the Name values here (remember, CSVs start counting at ZERO!)";
+    csvNameColEditText.onChange = function(){
+        var numErrorCheck = textBoxNumErrorChecker(csvNameColEditText.text,"CSV Column");
+        if(numErrorCheck == "notNum"){
+            csvNameColEditText.text = csvNameColEditTextGlobalHolder;
+        }else{
+            csvNameColEditTextGlobalHolder = Math.floor(numErrorCheck);
+            csvNameColEditText.text = csvNameColEditTextGlobalHolder;
+        };
+    };
 
 // CSVLASTNAMECOLGROUP
 // ===================
@@ -516,11 +536,23 @@ var csvLastNameColGroup = csvPanel.add("group", undefined, {name: "csvLastNameCo
 
 var csvLastNameColCheckBox = csvLastNameColGroup.add("checkbox", undefined, undefined, {name: "csvLastNameColCheckBox"}); 
     csvLastNameColCheckBox.text = "Last Names are in a Separate Column"; 
+    csvLastNameColCheckBox.helpTip = "If your CSV has last names in a separate column, check this box to tell the script which column they are in.";
     csvLastNameColCheckBox.onClick = function(){itemHideUnhider(csvLastNameColEditText)};
 
+var csvLastNameColEditTextGlobalHolder = "1";
 var csvLastNameColEditText = csvLastNameColGroup.add('edittext {properties: {name: "csvLastNameColEditText"}}'); 
-    csvLastNameColEditText.text = "1"; 
+    csvLastNameColEditText.text = csvLastNameColEditTextGlobalHolder; 
     csvLastNameColEditText.preferredSize.width = 40; 
+    csvLastNameColEditText.helpTip = "Put the column number containing the Last Name values here (remember, CSVs start counting at ZERO!)";
+    csvLastNameColEditText.onChange = function(){
+        var numErrorCheck = textBoxNumErrorChecker(csvLastNameColEditText.text,"CSV Column");
+        if(numErrorCheck == "notNum"){
+            csvLastNameColEditText.text = csvLastNameColEditTextGlobalHolder;
+        }else{
+            csvLastNameColEditTextGlobalHolder = Math.floor(numErrorCheck);
+            csvLastNameColEditText.text = csvLastNameColEditTextGlobalHolder;
+        };
+    };
     csvLastNameColEditText.hide();
 
 // CSVSUBTITLE1COLGROUP
@@ -534,9 +566,20 @@ var csvSubtitle1ColGroup = csvPanel.add("group", undefined, {name: "csvSubtitle1
 var csvSubtitle1ColStaticText = csvSubtitle1ColGroup.add("statictext", undefined, undefined, {name: "csvSubtitle1ColStaticText"}); 
     csvSubtitle1ColStaticText.text = "Column in CSV with Subtitles:"; 
 
+var csvSubtitle1ColEditTextGlobalHolder = "2";
 var csvSubtitle1ColEditText = csvSubtitle1ColGroup.add('edittext {properties: {name: "csvSubtitle1ColEditText"}}'); 
-    csvSubtitle1ColEditText.text = "2"; 
+    csvSubtitle1ColEditText.text = csvSubtitle1ColEditTextGlobalHolder; 
     csvSubtitle1ColEditText.preferredSize.width = 40; 
+    csvSubtitle1ColEditText.helpTip = "Put the column number containing the subtitle values here (remember, CSVs start counting at ZERO!)";
+    csvSubtitle1ColEditText.onChange = function(){
+        var numErrorCheck = textBoxNumErrorChecker(csvSubtitle1ColEditText.text,"CSV Column");
+        if(numErrorCheck == "notNum"){
+            csvSubtitle1ColEditText.text = csvSubtitle1ColEditTextGlobalHolder;
+        }else{
+            csvSubtitle1ColEditTextGlobalHolder = Math.floor(numErrorCheck);
+            csvSubtitle1ColEditText.text = csvSubtitle1ColEditTextGlobalHolder;
+        };
+    };
 
 // CSVSUBTITLE2COLGROUP
 // ====================
@@ -549,10 +592,20 @@ var csvSubtitle2ColGroup = csvPanel.add("group", undefined, {name: "csvSubtitle2
 var csvSubtitle2ColStaticText = csvSubtitle2ColGroup.add("statictext", undefined, undefined, {name: "csvSubtitle2ColStaticText"}); 
     csvSubtitle2ColStaticText.text = "Column in CSV with Second Subtitle:"; 
 
+var csvSubtitle2ColEditTextGlobalHolder = "3";
 var csvSubtitle2ColEditText = csvSubtitle2ColGroup.add('edittext {properties: {name: "csvSubtitle2ColEditText"}}'); 
-    csvSubtitle2ColEditText.text = "3"; 
+    csvSubtitle2ColEditText.text = csvSubtitle2ColEditTextGlobalHolder; 
     csvSubtitle2ColEditText.preferredSize.width = 40; 
-
+    csvSubtitle2ColEditText.helpTip = "Put the column number containing the second subtitle values here (remember, CSVs start counting at ZERO!)";
+    csvSubtitle2ColEditText.onChange = function(){
+        var numErrorCheck = textBoxNumErrorChecker(csvSubtitle2ColEditText.text,"CSV Column");
+        if(numErrorCheck == "notNum"){
+            csvSubtitle2ColEditText.text = csvSubtitle2ColEditTextGlobalHolder;
+        }else{
+            csvSubtitle2ColEditTextGlobalHolder = Math.floor(numErrorCheck);
+            csvSubtitle2ColEditText.text = csvSubtitle2ColEditTextGlobalHolder;
+        };
+    };
     csvSubtitle2ColGroup.hide();
 
 // PHOTOCOMPSPANEL
@@ -574,10 +627,12 @@ var photoCompsButtonsGroup = photoCompsPanel.add("group", undefined, {name: "pho
 
 var selectPhotoCompsButton = photoCompsButtonsGroup.add("button", undefined, undefined, {name: "selectPhotoCompsButton"}); 
     selectPhotoCompsButton.text = "Select Photo Comps"; 
+    selectPhotoCompsButton.helpTip = "Click to add all currently highlighted comp items in the project to the 'selected items' list below";
     selectPhotoCompsButton.onClick = function(){selectItemNameIDList("[object CompItem]","CompItem",selectedPhotoCompsList);};
 
 var removeSelectedCompsButton = photoCompsButtonsGroup.add("button", undefined, undefined, {name: "removeSelectedCompsButton"}); 
     removeSelectedCompsButton.text = "Delete"; 
+    removeSelectedCompsButton.helpTip = "Click to remove highlighted items from the 'Selected Items' list";
     removeSelectedCompsButton.onClick = function(){deleteMultiSelectedListItems(selectedPhotoCompsList);};
 
 // PHOTOCOMPSPANEL
@@ -596,6 +651,7 @@ var asmReturnButton = awardsShowMakerWindow.add("button", undefined, undefined, 
 
 var reviewButton = awardsShowMakerWindow.add("button", undefined, undefined, {name: "reviewButton"}); 
     reviewButton.text = "REVIEW"; 
+    reviewButton.helpTip = "Click to open the review window to check all input data before running script";
     reviewButton.onClick = function(){ //The review button has a lot of error checks on it before it actually builds the review list
         //Error check for template selection
         if(templateCompSelEditText.text == "No Comp Selected"){
@@ -668,6 +724,7 @@ var reviewList = undefined; //Creates the variable for the review listbox, which
 var runAWSButton = reviewGroup.add("button", undefined, undefined, {name: "runAWSButton"});
 runAWSButton.text = "CONFIRM & RUN";
 runAWSButton.alignment = ["center","bottom"];
+runAWSButton.helpTip = "Click to run the Awards Show Maker script with the above values";
 runAWSButton.onClick = function(){awsFunction()};
 
 reviewWindow.onShow = reviewWindow.onResize = reviewWindow.onResizing = function(){
