@@ -80,7 +80,7 @@ First, import your photo assets into the After Effects project.
 
 To get to the Photos to Comps tool, launch the script.
 When you first launch the script in After Effects, it will open a menu window. This is the central hub from which you can access the two tools packaged with the script. Clicking the **Photos to Comps Tool** button will open the tool.
-![A window prompt with a header reading "Awards Show Maker Menu" and three buttons in a vertical column. The top button reads "Photos to Comps Tool", the middle button reads "Awards Show Maker", and the bottom button reads "Help..."](https://i.imgur.com/OsaO3QT.png)
+![A window prompt with a header reading "Awards Show Maker Menu" and three buttons in a vertical column. The top button reads "Photos to Comps Tool", the middle button reads "Awards Show Maker", and the bottom button reads "Help..."](https://github.com/candyandy951/ae-awards-show-maker/blob/main/screenshots-for-readme/01-00-Main_Menu.png)
 The Photos to Comps tool includes two panels, the panel on the left is for inputting the comp creation values and the panel on the right is for adding your photo footage items to the tool.
 ![](https://i.imgur.com/nPlpEJ7.png)
 ### The Comp Settings Panel
@@ -179,7 +179,7 @@ When you click the "CONFIRM & RUN" button in the review window the script will c
 	 - The "Subtitle 1" text was shown in the Review Window if applicable.
 5. Replace the source text in the "Subtitle 2" text layer of the duplicate comp with the associated data from the CSV (if you checked the "second Subtitle" checkbox).
 	- The "Subtitle 2" text was shown in the Review Window if applicable.
-![enter image description here](https://i.imgur.com/SKk8Cu6.gif)
+![](https://i.imgur.com/SKk8Cu6.gif)
 ## Step 5: Assemble your "Master Comp"
 Now that you have all of your individual "slide" comps, you should arrange them into one clean "Master Comp" so they can be rendered as one coherent video. Currently this script does not have functionality to do this for you (maybe it will eventually), so I'll outline my usual next-steps below:
 
