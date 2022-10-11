@@ -203,5 +203,5 @@ Excel uses the settings in Windows to determine what your list separator should 
 - Navigate to "Region"
 - Click "Additional Settings"
 In this Additional Settings window, there should be a box for "List Separator". For use with this script, change this to a character that does NOT appear in your spreadsheet data AT ALL. Click "Apply". Now when you File>Export>CSV from Excel, it should use the list separator you specified in the Windows settings.
-![](https://i.imgur.com/qbJeMCI.png)
+![](https://github.com/candyandy951/ae-awards-show-maker/blob/main/screenshots-for-readme/00-02-Windows10_Change_List_Separator.png)
 
