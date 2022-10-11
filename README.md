@@ -180,7 +180,7 @@ When you click the "CONFIRM & RUN" button in the review window the script will c
 	 - The "Subtitle 1" text was shown in the Review Window if applicable.
 5. Replace the source text in the "Subtitle 2" text layer of the duplicate comp with the associated data from the CSV (if you checked the "second Subtitle" checkbox).
 	- The "Subtitle 2" text was shown in the Review Window if applicable.
-![](https://github.com/candyandy951/ae-awards-show-maker/blob/main/screenshots-for-readme/GIFs/ASM04_Phot_Comp_Selection_and_Review.gif)
+![](https://github.com/candyandy951/ae-awards-show-maker/blob/main/screenshots-for-readme/GIFs/ASM04_Photo_Comp_Selection_and_Review.gif)
 ## Step 5: Assemble your "Master Comp"
 Now that you have all of your individual "slide" comps, you should arrange them into one clean "Master Comp" so they can be rendered as one coherent video. Currently this script does not have functionality to do this for you (maybe it will eventually), so I'll outline my usual next-steps below:
 
