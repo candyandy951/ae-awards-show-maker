@@ -81,10 +81,11 @@ First, import your photo assets into the After Effects project.
 To get to the Photos to Comps tool, launch the script.
 When you first launch the script in After Effects, it will open a menu window. This is the central hub from which you can access the two tools packaged with the script. Clicking the **Photos to Comps Tool** button will open the tool.
 ![A window prompt with a header reading "Awards Show Maker Menu" and three buttons in a vertical column. The top button reads "Photos to Comps Tool", the middle button reads "Awards Show Maker", and the bottom button reads "Help..."](https://github.com/candyandy951/ae-awards-show-maker/blob/main/screenshots-for-readme/01-00-Main_Menu.png)
+
 The Photos to Comps tool includes two panels, the panel on the left is for inputting the comp creation values and the panel on the right is for adding your photo footage items to the tool.
-![](https://i.imgur.com/nPlpEJ7.png)
+![](https://github.com/candyandy951/ae-awards-show-maker/blob/main/screenshots-for-readme/02-00-Photos_to_Comps_Window.png)
 ### The Comp Settings Panel
-![](https://i.imgur.com/0Mnxcgm.png)
+![](https://github.com/candyandy951/ae-awards-show-maker/blob/main/screenshots-for-readme/02-01-PTC_Comp_Settings_Panel.png)
 
 This panel is where you tell the tool the aspects of the comps you want your images to be inserted into. You should make these settings MATCH the settings of the placeholder photo comp in your template.
 
@@ -94,7 +95,7 @@ This panel is where you tell the tool the aspects of the comps you want your ima
  4. **Comp Frame Rate** - The frame rate of the created comps. It's recommended that this match the framerate of your template.
  5. **Comp Pixel Aspect** - The pixel aspect of the created comps. It's recommended that this match the pixel aspect of your template.
 ### The Item Selection List Panel
-![](https://i.imgur.com/mvnEpu4.png)
+![](https://github.com/candyandy951/ae-awards-show-maker/blob/main/screenshots-for-readme/02-02-PTC-Selected_Items_List.png)
 This panel on the right side of the window is where you select your photo footage items to turn into comps.
  1. **Selected Items List** - This area is where the footage items that you select will appear for you to review. The first column will display the name of the footage item and the second column will display the ID number of the footage item. The ID number is a unique number that is assigned to each project item in After Effects and is what the script uses to reference your selected items. The ID number isn't really something you as a user need to worry about - aside from looking at and saying "neat!" because now you know those footage items' IDs.
  2. **Select Photos Button** - Clicking this button after selecting/highlighting the photo footage items in your project panel will pull those items into the Selected Items List for you to review. This button will REFRESH your selected items list every time you click it to select items, it does not act as an "add" button.
@@ -114,15 +115,15 @@ After running the tool, it is recommended that you open and check each comp it c
 
 NOTE: If your awards show will include text content, it is IMPERITIVE that when your photo comps sort alphabetically, they match the order of the text data in your CSV. It is recommended that you rename the source footage files ahead of time so they sort in the correct order since the photo comps created by the Photos to Comps tool adopt the same names as the footage they contain.
 (technically speaking, this is more of a bug/fault in the script in the way that it pulls your selections from the project panel and how it is not intelligent in matching the resulting photo comps with the CSV data. I may implement a fix for this in the future... but for now you need to make sure your photos and photo comps sort in your desired order.)
-![](https://i.imgur.com/Z7LcgJd.gif)
+![](https://github.com/candyandy951/ae-awards-show-maker/blob/main/screenshots-for-readme/GIFs/ASM01_Photos_To_Comps.gif)
 
 ## Step 4: The Award Show Maker Tool:
 Return to the script's main menu, then select the "Awards Show Maker" button to open the Awards Show Maker tool.
-![](https://i.imgur.com/FYYGyV4.png)
+![](https://github.com/candyandy951/ae-awards-show-maker/blob/main/screenshots-for-readme/03-00-Awards_Show_Maker_Window.png)
 The Awards Show Maker window is dynamic, when you check certain boxes, other items in the window may appear or vanish.
 ### The Template Input Panel
 The template input panel is where you tell the script which comp in the project is your template comp and what layers in it are relevant.
-![](https://i.imgur.com/HMcJ8mW.png)
+![](https://github.com/candyandy951/ae-awards-show-maker/blob/main/screenshots-for-readme/03-01-ASM_Template_Input.png)
 
  1. **Select Template Button** - Highlight/Select your template comp in the project panel then click this button to tell the script which comp is your template comp. The box to the right of the window will populate with the name of your template comp when selected.
  2. **Template Includes a Photo Layer Checkbox** - If your template includes a photo layer, check this box. You will notice certain items in the rest of the window appear or disappear when checking the box.
@@ -134,11 +135,11 @@ The template input panel is where you tell the script which comp in the project 
  7. **Select Subtitle 1 Layer Button** - Open your template comp so the layers are visible. Highlight/Select the layer with your subtitle text layer in it, then click this button to tell the script which layer contains the first subtitle text. When you do, the layer's index and name will populate the box to the right of the button.
  8. **Template Includes a second "Subtitle" Text Layer Checkbox** - If your template includes a second Subtitle Text Layer, check this box. You will notice certain items in the rest of the window appear or disappear when checking the box.
  9. **Select Subtitle 2 Layer Button** - Open your template comp so the layers are visible. Highlight/Select the layer with your second subtitle text layer in it, then click this button to tell the script which layer contains the second subtitle text. When you do, the layer's index and name will populate the box to the right of the button.
-![](https://i.imgur.com/rAAHwFK.gif) 
+![](https://github.com/candyandy951/ae-awards-show-maker/blob/main/screenshots-for-readme/GIFs/ASM02_Template_Input_Panel.gif) 
 
 ### The CSV Input Panel
 The text-based components of this script are driven by CSV data which you will need to prepare ahead of time. This panel is where you tell the script how to read the CSV file and which parts of your CSV to read for which things.
-![](https://i.imgur.com/o6MqGqh.png)
+![](https://github.com/candyandy951/ae-awards-show-maker/blob/main/screenshots-for-readme/03-02-ASM_CSV_Input.png)
  10. **Choose CSV File Button** - Clicking this button will open a File Explorer/Finder window for you to browse for and select your CSV file.
  11. **Character Used in CSV as List Separator** - This box is where you specify what character your CSV uses as a list separator. By default, spreadsheet applications will export CSV files with commas as the list separator. However, this script is not smart, and as such if your CSV cell content includes commas and it also uses commas as the list separator that will confuse the script and cause unwanted behavior. If your text content includes commas, you will need to export/create a CSV that uses a different character as a list separator, I usually use pipes | when commas are not an option. See the Appendix of this ReadMe for more information about this.
  12. **Does the CSV have a Header Row? Checkbox** - Header rows are often useful for the user when creating spreadsheets so you know what information is in each column, they're typically the very first row in a spreadsheet. Normally, if you were to import a CSV into After Effects, it assumes that the first row is a header row and ignores it completely. This script does NOT do that and relies on the user to tell it whether or not it should ignore the first row. With this box checked, it will ignore the first row, if not it will assume the first row has data you want to be included in the first slide.
@@ -147,10 +148,10 @@ The text-based components of this script are driven by CSV data which you will n
  14. **Last Names are in a Separate Column** - Some spreadsheets will have a separate column for first names and last names. This script is designed to work with those as well. If your CSV has full names in a single column, uncheck this box. If your CSV does have separate columns for first and last names, check this box. When this box is checked, a new text box will appear, this is where you specify the column that contains the LAST NAMES. If this is the case, the regular "Names" column is where you specify the column containing the FIRST NAMES.
  15. **Column in CSV with Subtitles** - This box will appear if you have toggled the "Template Includes a Subtitle Text Layer" checkbox. This is where you specify which column in your CSV contains the text data that you want to be inserted into the layer you selected with the "Select Subtitle 1 Layer" button.
  16. **Column in CSV with Second Subtitle** - This box will appear if you have toggled the "Template Includes a second Subtitle Text Layer" checkbox. This is where you specify which column in your CSV contains the text data that you want to be inserted into the layer you selected with the "Select Subtitle 2 Layer" button.
-![](https://i.imgur.com/C9zli4x.gif)
+![](https://github.com/candyandy951/ae-awards-show-maker/blob/main/screenshots-for-readme/GIFs/ASM03_CSV_Input_Panel.gif)
 ### The Photo Comps Panel
 This panel is where you select the photo comps that you want to be inserted into your "slides" - most likely, these will be the comps generated by the Photos to Comps tool.
-![](https://i.imgur.com/dGoEHFq.png)
+![](https://github.com/candyandy951/ae-awards-show-maker/blob/main/screenshots-for-readme/03-03-ASM_Photo_Comp_Selection.png)
  1. **Select Photo Comps Button** - Highlight/Select your photo comps (likely the ones created by the Photos to Comps tool) then click this button to populate them into the selection list.
  2. **Delete Button** - With items populating the list you can select them and delete any accidentally added items.
  3. **Selected Photo Comps List** - When you select the photo comps using the "Select Photo Comps" button, the selected comp names and ID numbers will populate here.
@@ -161,7 +162,7 @@ This panel is where you select the photo comps that you want to be inserted into
 
 ### The Review Window
 This window opens when you click the "REVIEW" button in the Award Show Maker Tool window, its intention is to give you an opportunity to review what the script pulled from all of the data you gave it and ensure that the entries all match and the data is correct before you execute the script.
-![](https://i.imgur.com/2s3ejpR.png)
+![](https://github.com/candyandy951/ae-awards-show-maker/blob/main/screenshots-for-readme/03-04-ASM_Review_Window.png)
 
  1. **Return to Awards Show Maker Window** - Clicking this button will bring you back to the Awards Show Maker window. Be sure to use this button to return to the previous window as Xing out this window will close the entire script and you'll need to re-enter your data again.
  2. **Review List** - This is where the script will assemble all the data from your CSV and your photo comps. You should take some time to browse through this list to make sure each row has all of the data correct, that the script successfully pulled the text from your CSV and that it has associated the correct photo comp with that CSV (remember, it's up to YOU to make sure the photo comps are in the correct order alphabetically to match your CSV data). Each row in this list will be a new "slide" so make sure you check this for errors so you aren't going back after the fact to figure out what happened if something went wrong.
@@ -179,18 +180,18 @@ When you click the "CONFIRM & RUN" button in the review window the script will c
 	 - The "Subtitle 1" text was shown in the Review Window if applicable.
 5. Replace the source text in the "Subtitle 2" text layer of the duplicate comp with the associated data from the CSV (if you checked the "second Subtitle" checkbox).
 	- The "Subtitle 2" text was shown in the Review Window if applicable.
-![](https://i.imgur.com/SKk8Cu6.gif)
+![](https://github.com/candyandy951/ae-awards-show-maker/blob/main/screenshots-for-readme/GIFs/ASM04_Phot_Comp_Selection_and_Review.gif)
 ## Step 5: Assemble your "Master Comp"
 Now that you have all of your individual "slide" comps, you should arrange them into one clean "Master Comp" so they can be rendered as one coherent video. Currently this script does not have functionality to do this for you (maybe it will eventually), so I'll outline my usual next-steps below:
 
  1. Create a new "Master Comp" - it'll likely have the same specs as your Template Comp, but will be long enough to fit the combined durations of each of your newly created "slide" comps.
  2. Add all of your newly created "slide" comps to the Master Comp.
  3. Select all of the "slide" comps, right click, then navigate to "Keyframe Assistant>Sequence Layers...":
-![](https://i.imgur.com/EFaL3Vf.png)
+![](https://github.com/candyandy951/ae-awards-show-maker/blob/main/screenshots-for-readme/00-01-Sequence_Layers_Context.png)
 4. Make sure the "Overlap" box is unchecked (unless you want that) then click "OK". This will sequence all of your awards "slides" so they play one after the other. This works best if you've created your Template Comp with an animate in from and animate out to a blank screen.
 	- NOTE: The Sequence Layers tool DOES care about the order you selected your layers in when butting them against one another in the timeline. If your layers sequence in the incorrect order, reselect them in the opposite order and try again.
 5. Now add a nice background behind all of your "slides" and render!
-![](https://i.imgur.com/5Cs1VqL.gif)
+![](https://github.com/candyandy951/ae-awards-show-maker/blob/main/screenshots-for-readme/GIFs/ASM05_Master_Comp_Assembly.gif)
 # Appendix
 ## Release Notes
 **V1.0** - Initial Release
@@ -202,5 +203,5 @@ Excel uses the settings in Windows to determine what your list separator should 
 - Navigate to "Region"
 - Click "Additional Settings"
 In this Additional Settings window, there should be a box for "List Separator". For use with this script, change this to a character that does NOT appear in your spreadsheet data AT ALL. Click "Apply". Now when you File>Export>CSV from Excel, it should use the list separator you specified in the Windows settings.
-![enter image description here](https://i.imgur.com/qbJeMCI.png)
+![](https://i.imgur.com/qbJeMCI.png)
 
