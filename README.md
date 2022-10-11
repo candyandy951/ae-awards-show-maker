@@ -194,7 +194,7 @@ Now that you have all of your individual "slide" comps, you should arrange them 
 ![](https://github.com/candyandy951/ae-awards-show-maker/blob/main/screenshots-for-readme/GIFs/ASM05_Master_Comp_Assembly.gif)
 # Appendix
 ## Release Notes
-**V1.0** - Initial Release
+**V1.0.0** - Initial Release
 ## Changing the Character Used as List Separator in Excel on Windows 10
 Below are the steps to take to change what character is used as the list separator when exporting a CSV from Excel on Windows 10. I don't currently know of any other solutions to export a CSV with a list separator other than a comma, if you do know I'm hungry for the knowledge.
 
