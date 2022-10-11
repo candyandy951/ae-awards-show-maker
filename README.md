@@ -193,6 +193,8 @@ Now that you have all of your individual "slide" comps, you should arrange them 
 5. Now add a nice background behind all of your "slides" and render!
 ![](https://github.com/candyandy951/ae-awards-show-maker/blob/main/screenshots-for-readme/GIFs/ASM05_Master_Comp_Assembly.gif)
 # Appendix
+## Demo AE File
+This repo includes a demo After Effects project file, a CSV, and headshot photos for you to experiment with to test this script and get a handle on how it works.
 ## Release Notes
 **V1.0.0** - Initial Release
 ## Changing the Character Used as List Separator in Excel on Windows 10
